@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">AndroidAppA</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">ArriveAlert</string>
     <string name="action_settings">Settings</string>
+    <string name="action_locations">Edit Locations</string>
+    
+    <string name="alerts_header">My Alerts</string>
+    <string name="add_alert_button">Add New Alert</string>
+    <string name="radio0">Text</string>
+    <string name="radio1">Email</string>
+    
 
 </resources>

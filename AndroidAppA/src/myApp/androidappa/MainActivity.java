@@ -60,5 +60,12 @@ public class MainActivity extends ActionBarActivity {
 			return rootView;
 		}
 	}
+	
+	public void addNewAlert(View v) {
+		// if radio0 is filled then launch new text alert activity
+		// if radio1 is filled then launch new email alert activity
+		
+	}
+	
 
 }
