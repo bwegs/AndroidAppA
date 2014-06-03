@@ -22,8 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="myApp.androidappa.AddNewTextAlert"></activity>
-        <activity android:name="myApp.androidappa.AddNewEmailAlert"></activity>
+        <activity android:name="myApp.androidappa.AddNewTextAlert" android:parentActivityName="myApp.androidappa.MainActivity"></activity>
+        <activity android:name="myApp.androidappa.AddNewEmailAlert" android:parentActivityName="myApp.androidappa.MainActivity"></activity>
     </application>
 
 </manifest>
