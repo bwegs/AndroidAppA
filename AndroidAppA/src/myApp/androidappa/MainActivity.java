@@ -1,14 +1,17 @@
 package myApp.androidappa;
 
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.os.Build;
 
 public class MainActivity extends ActionBarActivity {
@@ -61,11 +64,39 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 	
+	// triggered as onClick() event of 'Add New Alert' button
 	public void addNewAlert(View v) {
+		RadioButton rb;
+		rb = (RadioButton) findViewById(R.id.radio0);
+		
 		// if radio0 is filled then launch new text alert activity
-		// if radio1 is filled then launch new email alert activity
+		if(rb.isChecked()) {
+			Intent intentAddNewAlert = new Intent(this,AddNewTextAlert.class);
+	 	    startActivityForResult(intentAddNewAlert, 2);
+		} 
+		// else radio1 is filled then launch new email alert activity
+		else {
+			Intent intentAddNewAlert = new Intent(this,AddNewEmailAlert.class);
+	 	    startActivityForResult(intentAddNewAlert, 2);
+		}
+		
 		
 	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+ 		super.onActivityResult(requestCode, resultCode, data);
+ 		
+        if(null != data) {	 	
+        	String item = data.getStringExtra("ITEM");
+        	String priority = data.getStringExtra("PRIORITY");
+        	String finished = data.getStringExtra("FINISHED");
+        	if(finished.compareTo("TRUE") == 0)
+        		item = "FINISHED: " + item;
+        	else
+        		item = priority + ": " + item;
+        	//mAdapter.add(item);
+        }
+ 	}
 	
 
 }
