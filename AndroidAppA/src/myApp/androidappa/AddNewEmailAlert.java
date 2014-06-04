@@ -65,6 +65,8 @@ public class AddNewEmailAlert extends Activity {
 					   Toast.LENGTH_LONG).show();
 		
 		
+		intentMessage.putExtra("ICON", R.drawable.ic_action_chat);
+		
 //		if(arriveRadio.isChecked()) {
 //			intentMessage.putExtra("WHEN", "ENTER");
 //		} else {

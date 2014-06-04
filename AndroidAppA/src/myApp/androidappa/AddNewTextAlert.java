@@ -69,6 +69,8 @@ public class AddNewTextAlert extends Activity {
 							   Toast.LENGTH_LONG).show();
 				
 				
+				intentMessage.putExtra("ICON", R.drawable.ic_action_email);
+				
 //				if(arriveRadio.isChecked()) {
 //					intentMessage.putExtra("WHEN", "ENTER");
 //				} else {
@@ -76,7 +78,7 @@ public class AddNewTextAlert extends Activity {
 //				} 
 				
 				// put the message in Intent
-				//intentMessage.putExtra("ITEM", item);
+				//intentMessage.putExtra("ALERT", name);
 
 				//setResult(2,intentMessage);
 			
