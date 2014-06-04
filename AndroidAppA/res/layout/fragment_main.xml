@@ -62,7 +62,6 @@
             android:layout_alignBottom="@+id/textView1"
             android:layout_alignParentLeft="false"
             android:layout_alignParentTop="false"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@id/textView1"
             android:background="@android:color/background_light"
