@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
+import android.widget.Toast;
 import android.os.Build;
 
 public class MainActivity extends ActionBarActivity {
@@ -32,7 +33,7 @@ public class MainActivity extends ActionBarActivity {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -42,6 +43,10 @@ public class MainActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			launchSettings();
+			return true;
+		} else if (id == R.id.action_locations) {
+			launchLocations();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -97,6 +102,18 @@ public class MainActivity extends ActionBarActivity {
         	//mAdapter.add(item);
         }
  	}
+	
+	
+	
+	public void launchSettings() {
+		Toast.makeText(getApplicationContext(), "launched settings page", 
+				Toast.LENGTH_SHORT).show();
+	}
+	
+	public void launchLocations() {
+		Toast.makeText(getApplicationContext(), "launched locations page", 
+				Toast.LENGTH_SHORT).show();
+	}
 	
 
 }

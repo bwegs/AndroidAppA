@@ -5,9 +5,17 @@
 
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never"/>
-    <item android:id="@+id/action_locations" android:title="@string/action_locations"></item>
+        android:icon="@drawable/ic_action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom|withText"/>
+    <item 
+        android:id="@+id/action_locations" 
+        android:title="@string/action_locations" 
+        android:icon="@drawable/ic_action_place"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom|withText" />
+        
+
 
 </menu>
