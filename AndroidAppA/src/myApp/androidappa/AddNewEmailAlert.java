@@ -68,6 +68,7 @@ public class AddNewEmailAlert extends Activity {
 		intentMessage.putExtra("TITLE", name);
 		intentMessage.putExtra("CONTACT", email);
 		intentMessage.putExtra("ICON", R.drawable.ic_action_email);
+		intentMessage.putExtra("MESSAGE", text);
 		
 		
 //		if(arriveRadio.isChecked()) {

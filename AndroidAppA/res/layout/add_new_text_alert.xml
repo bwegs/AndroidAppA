@@ -12,7 +12,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -20,6 +20,7 @@
         android:layout_marginTop="10dp"
         android:drawablePadding="3dp"
         android:drawableRight="@drawable/ic_action_chat"
+        android:fontFamily="Roboto"
         android:text="New Text Alert"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     
@@ -43,7 +44,9 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="ex: Leaving Work"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="25" />
+
     </LinearLayout>
 
     <TextView
@@ -74,7 +77,9 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="1234567890"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="14" />
+
     </LinearLayout>
 
     <TextView
@@ -167,7 +172,8 @@
        android:layout_marginBottom="10dp"
        android:ems="10"
        android:hint="ex: I just left work, should be home in about 30 minutes."
-       android:inputType="textMultiLine" >
+       android:inputType="textMultiLine"
+       android:maxLength="254" >
 
        <requestFocus />
    </EditText>

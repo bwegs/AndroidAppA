@@ -35,8 +35,14 @@ public class MainActivity extends ListActivity {
 		// need to load saved alerts from local storage into alertListItems
 		alertListItems = new ArrayList<AlertListItem>();
 		// hard coded for testing purposes
-		alertListItems.add(new AlertListItem("Finish Lab 4", R.drawable.ic_action_email, "mom@gmail.com"));
+		alertListItems.add(new AlertListItem("Finish Lab 4", R.drawable.ic_action_email, "mom@gmail.com",
+				"hey mom, just wanted to let you know that I finished lab 4!"));
 		alertListItems.add(new AlertListItem());
+		alertListItems.add(new AlertListItem("Test long title and message", R.drawable.ic_action_chat, "9706914011",
+				"hey mom, it's me, Bob, just wanted to text you a really long message" +
+				"because I love you and I want you to know that I appreciate everything" +
+				"that you've ever done for me, which is a lot, so thank you.. also this is an" +
+				"awesome run on sentence."));
 		
 		mAdapter = new AlertListAdapter(this, alertListItems);
 		setListAdapter(mAdapter);
@@ -117,6 +123,7 @@ public class MainActivity extends ListActivity {
         	String title = data.getStringExtra("TITLE");
         	String contact = data.getStringExtra("CONTACT");
         	int icon = data.getIntExtra("ICON", 0);
+        	String message = data.getStringExtra("MESSAGE");
         	
 //        	if(requestCode == Constants.EMAIL)
 //        		icon = R.drawable.ic_action_email;
@@ -124,7 +131,7 @@ public class MainActivity extends ListActivity {
 //        		icon = R.drawable.ic_action_chat;
         	
         	// needs a title, icon and contact
-        	mAdapter.add(new AlertListItem(title, icon, contact));
+        	mAdapter.add(new AlertListItem(title, icon, contact, message));
         	mAdapter.notifyDataSetChanged();
         }
  	}

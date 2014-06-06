@@ -12,7 +12,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -20,6 +20,7 @@
             android:layout_marginTop="10dp"
             android:drawablePadding="3dp"
             android:drawableRight="@drawable/ic_action_email"
+            android:fontFamily="Roboto"
             android:text="New Email Alert"
             android:textAppearance="?android:attr/textAppearanceLarge" >
 
@@ -45,7 +46,9 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="ex: Leaving Work"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:maxLength="25" />
+
         </LinearLayout>
 
         <TextView
@@ -76,7 +79,9 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="mom@gmail.com"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:maxLength="30" />
+
         </LinearLayout>
 
         <TextView

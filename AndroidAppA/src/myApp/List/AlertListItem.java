@@ -11,12 +11,14 @@ public class AlertListItem {
 	public AlertListItem(){
 		this.title = "Title (e.g. Leaving School)";
 		this.contact = "Contact (e.g. Mom)";
+		this.message = "Hey mom, I'm leaving school now. See you soon!";
 	}
 
-	public AlertListItem(String title, int icon, String contact){
+	public AlertListItem(String title, int icon, String contact, String message){
 		this.title = title;
 		this.icon = icon;
 		this.contact = contact;
+		this.message = message;
 	}
 	
 	public AlertListItem(String title, int icon, String when, String contact, String message){

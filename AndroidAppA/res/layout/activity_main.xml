@@ -3,13 +3,12 @@
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:orientation="vertical"
-    android:padding="16dp" >
+    android:padding="3dp" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginLeft="8dp"
-        android:layout_weight="1"
         android:orientation="vertical" >
 
         <TextView
@@ -17,13 +16,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/alerts_header"
+            android:textAllCaps="false"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="24sp" />
 
         <ListView
             android:id="@android:id/list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginBottom="5dp"
             android:longClickable="true" />
 
@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center_horizontal"
         android:orientation="horizontal" >
 
         <RadioButton
@@ -53,23 +54,24 @@
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
 
         <ImageButton
             android:id="@+id/imageButton1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textView1"
+            android:layout_alignBottom="@+id/message"
             android:layout_alignParentLeft="false"
             android:layout_alignParentTop="false"
             android:layout_marginTop="5dp"
-            android:layout_toRightOf="@id/textView1"
+            android:layout_toRightOf="@id/message"
             android:background="@android:color/background_light"
             android:onClick="addNewAlert"
             android:src="@drawable/ic_action_new" />
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"

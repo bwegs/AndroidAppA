@@ -54,10 +54,12 @@ public class AlertListAdapter extends BaseAdapter {
         ImageView imgIcon = (ImageView)convertView.findViewById(R.id.icon);
         TextView txtTitle = (TextView)convertView.findViewById(R.id.title);
         TextView txtContact = (TextView)convertView.findViewById(R.id.contact);
+        TextView txtMessage = (TextView)convertView.findViewById(R.id.message);
          
         imgIcon.setImageResource(alertItems.get(position).getIcon());        
         txtTitle.setText(alertItems.get(position).getTitle());
         txtContact.setText(alertItems.get(position).getContact());
+        txtMessage.setText(alertItems.get(position).getMessage());
         
         // displaying count
         // check whether it set visible or not

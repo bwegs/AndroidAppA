@@ -71,7 +71,7 @@ public class AddNewTextAlert extends Activity {
 				intentMessage.putExtra("TITLE", name);
 				intentMessage.putExtra("CONTACT", phone);
 				intentMessage.putExtra("ICON", R.drawable.ic_action_chat);
-				
+				intentMessage.putExtra("MESSAGE", text);
 				
 //				if(arriveRadio.isChecked()) {
 //					intentMessage.putExtra("WHEN", "ENTER");
