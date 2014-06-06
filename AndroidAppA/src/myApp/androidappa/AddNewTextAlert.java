@@ -68,8 +68,10 @@ public class AddNewTextAlert extends Activity {
 							   "Added new text alert: " + name + " " + phone + " " + text,
 							   Toast.LENGTH_LONG).show();
 				
+				intentMessage.putExtra("TITLE", name);
+				intentMessage.putExtra("CONTACT", phone);
+				intentMessage.putExtra("ICON", R.drawable.ic_action_chat);
 				
-				intentMessage.putExtra("ICON", R.drawable.ic_action_email);
 				
 //				if(arriveRadio.isChecked()) {
 //					intentMessage.putExtra("WHEN", "ENTER");
@@ -80,9 +82,9 @@ public class AddNewTextAlert extends Activity {
 				// put the message in Intent
 				//intentMessage.putExtra("ALERT", name);
 
-				//setResult(2,intentMessage);
+				setResult(Constants.TEXT,intentMessage);
 			
-		        //finish();
+		        finish();
 	}
 	
 	private boolean checkEmpty(String s) {

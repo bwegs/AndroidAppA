@@ -1,9 +1,15 @@
 package myApp.androidappa;
 
 
+import java.util.ArrayList;
+
+import myApp.List.AlertListAdapter;
+import myApp.List.AlertListItem;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,21 +17,37 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import android.os.Build;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ListActivity {
 
+	private ArrayList<AlertListItem> alertListItems;
+    private AlertListAdapter mAdapter;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
+		// need to load saved alerts from local storage into alertListItems
+		alertListItems = new ArrayList<AlertListItem>();
+		// hard coded for testing purposes
+		alertListItems.add(new AlertListItem("Finish Lab 4", R.drawable.ic_action_email, "mom@gmail.com"));
+		alertListItems.add(new AlertListItem());
+		
+		mAdapter = new AlertListAdapter(this, alertListItems);
+		setListAdapter(mAdapter);
+		
+		android.app.ActionBar action = getActionBar();
+		action.show();
+		
+//		if (savedInstanceState == null) {
+//			getSupportFragmentManager().beginTransaction()
+//					.add(R.id.container, new PlaceholderFragment()).commit();
+//		}
 	}
 
 	@Override
@@ -77,12 +99,12 @@ public class MainActivity extends ActionBarActivity {
 		// if radio0 is filled then launch new text alert activity
 		if(rb.isChecked()) {
 			Intent intentAddNewAlert = new Intent(this,AddNewTextAlert.class);
-	 	    startActivityForResult(intentAddNewAlert, 2);
+	 	    startActivityForResult(intentAddNewAlert, Constants.TEXT);
 		} 
 		// else radio1 is filled then launch new email alert activity
 		else {
 			Intent intentAddNewAlert = new Intent(this,AddNewEmailAlert.class);
-	 	    startActivityForResult(intentAddNewAlert, 2);
+	 	    startActivityForResult(intentAddNewAlert, Constants.EMAIL);
 		}
 		
 		
@@ -91,19 +113,21 @@ public class MainActivity extends ActionBarActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
  		super.onActivityResult(requestCode, resultCode, data);
  		
-        if(null != data) {	 	
-        	String item = data.getStringExtra("ITEM");
-        	String priority = data.getStringExtra("PRIORITY");
-        	String finished = data.getStringExtra("FINISHED");
-        	if(finished.compareTo("TRUE") == 0)
-        		item = "FINISHED: " + item;
-        	else
-        		item = priority + ": " + item;
-        	//mAdapter.add(item);
+        if(data != null) {	 	
+        	String title = data.getStringExtra("TITLE");
+        	String contact = data.getStringExtra("CONTACT");
+        	int icon = data.getIntExtra("ICON", 0);
+        	
+//        	if(requestCode == Constants.EMAIL)
+//        		icon = R.drawable.ic_action_email;
+//        	else
+//        		icon = R.drawable.ic_action_chat;
+        	
+        	// needs a title, icon and contact
+        	mAdapter.add(new AlertListItem(title, icon, contact));
+        	mAdapter.notifyDataSetChanged();
         }
  	}
-	
-	
 	
 	public void launchSettings() {
 		Toast.makeText(getApplicationContext(), "launched settings page", 

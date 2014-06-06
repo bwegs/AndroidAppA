@@ -8,11 +8,15 @@ public class AlertListItem {
 	private String message; // the message being sent
 	// location
 	
-	public AlertListItem(){}
+	public AlertListItem(){
+		this.title = "Title (e.g. Leaving School)";
+		this.contact = "Contact (e.g. Mom)";
+	}
 
-	public AlertListItem(String title, int icon){
+	public AlertListItem(String title, int icon, String contact){
 		this.title = title;
 		this.icon = icon;
+		this.contact = contact;
 	}
 	
 	public AlertListItem(String title, int icon, String when, String contact, String message){

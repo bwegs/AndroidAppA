@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+
 public class AddNewEmailAlert extends Activity {
 	EditText alertName;
 	EditText emailAdd;
@@ -64,8 +65,10 @@ public class AddNewEmailAlert extends Activity {
 					   "Added new email alert: " + name + " " + email + " " + text,
 					   Toast.LENGTH_LONG).show();
 		
+		intentMessage.putExtra("TITLE", name);
+		intentMessage.putExtra("CONTACT", email);
+		intentMessage.putExtra("ICON", R.drawable.ic_action_email);
 		
-		intentMessage.putExtra("ICON", R.drawable.ic_action_chat);
 		
 //		if(arriveRadio.isChecked()) {
 //			intentMessage.putExtra("WHEN", "ENTER");
@@ -76,9 +79,9 @@ public class AddNewEmailAlert extends Activity {
 		// put the message in Intent
 		//intentMessage.putExtra("ITEM", item);
 
-		//setResult(2,intentMessage);
+		setResult(Constants.EMAIL,intentMessage);
 	
-        //finish();
+        finish();
 	}
 	
 	private boolean checkEmpty(String s) {
