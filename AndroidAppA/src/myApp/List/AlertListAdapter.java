@@ -51,9 +51,9 @@ public class AlertListAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.alert_list_item, null);
         }
          
-        ImageView imgIcon = (ImageView) convertView.findViewById(R.id.icon);
-        TextView txtTitle = (TextView) convertView.findViewById(R.id.title);
-        TextView txtContact = (TextView) convertView.findViewById(R.id.contact);
+        ImageView imgIcon = (ImageView)convertView.findViewById(R.id.icon);
+        TextView txtTitle = (TextView)convertView.findViewById(R.id.title);
+        TextView txtContact = (TextView)convertView.findViewById(R.id.contact);
          
         imgIcon.setImageResource(alertItems.get(position).getIcon());        
         txtTitle.setText(alertItems.get(position).getTitle());
