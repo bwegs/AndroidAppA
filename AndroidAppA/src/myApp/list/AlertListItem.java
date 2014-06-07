@@ -1,4 +1,4 @@
-package myApp.List;
+package myApp.list;
 
 public class AlertListItem {
 	private String title;   // name of the alert
@@ -6,7 +6,7 @@ public class AlertListItem {
 	private String contact; // phone # or email
 	private String when;    // "enter" or "exit"
 	private String message; // the message being sent
-	// location
+	private String location; // still unsure
 	
 	public AlertListItem(){
 		this.title = "Title (e.g. Leaving School)";
@@ -27,6 +27,15 @@ public class AlertListItem {
 		this.when = when;
 		this.contact = contact;
 		this.message = message;
+	}
+	
+	public AlertListItem(String title, String contact, String location, String message, String when, int icon){
+		this.title = title;
+		this.icon = icon;
+		this.when = when;
+		this.contact = contact;
+		this.message = message;
+		this.location = location;
 	}
 
 	public String getTitle(){

@@ -35,6 +35,8 @@ public class AddNewEmailAlert extends Activity {
 		String email = emailAdd.getText().toString();
 		String text = message.getText().toString();
 		
+		
+		
 		// **reminder** also need to check for duplicate names
 		if(checkEmpty(name)) { 
 			Toast.makeText(AddNewEmailAlert.this,

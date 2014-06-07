@@ -23,13 +23,25 @@
             </intent-filter>
         </activity>
         <activity android:name="myApp.androidappa.AddNewTextAlert" 
+            	  android:label="@string/new_alert"
             	  android:parentActivityName="myApp.androidappa.MainActivity"
             	  android:windowSoftInputMode="stateHidden">
             	  
         </activity>
         <activity android:name="myApp.androidappa.AddNewEmailAlert" 
+                  android:label="@string/new_alert"
             	  android:parentActivityName="myApp.androidappa.MainActivity"
             	  android:windowSoftInputMode="stateHidden">
+            
+        </activity>
+        <activity android:parentActivityName="myApp.androidappa.MainActivity"
+            android:label="@string/action_settings"
+             android:name="myApp.androidappa.SettingsActivity">
+            
+        </activity>
+        <activity android:parentActivityName="myApp.androidappa.MainActivity"
+            android:label="@string/action_locations"
+             android:name="myApp.androidappa.EditLocationsActivity">
             
         </activity>
     </application>

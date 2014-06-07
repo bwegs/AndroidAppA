@@ -3,8 +3,8 @@ package myApp.androidappa;
 
 import java.util.ArrayList;
 
-import myApp.List.AlertListAdapter;
-import myApp.List.AlertListItem;
+import myApp.list.AlertListAdapter;
+import myApp.list.AlertListItem;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -37,7 +37,7 @@ public class MainActivity extends ListActivity {
 		// hard coded for testing purposes
 		alertListItems.add(new AlertListItem("Finish Lab 4", R.drawable.ic_action_email, "mom@gmail.com",
 				"hey mom, just wanted to let you know that I finished lab 4!"));
-		alertListItems.add(new AlertListItem());
+		//alertListItems.add(new AlertListItem());
 		alertListItems.add(new AlertListItem("Test long title and message", R.drawable.ic_action_chat, "9706914011",
 				"hey mom, it's me, Bob, just wanted to text you a really long message" +
 				"because I love you and I want you to know that I appreciate everything" +
@@ -125,25 +125,20 @@ public class MainActivity extends ListActivity {
         	int icon = data.getIntExtra("ICON", 0);
         	String message = data.getStringExtra("MESSAGE");
         	
-//        	if(requestCode == Constants.EMAIL)
-//        		icon = R.drawable.ic_action_email;
-//        	else
-//        		icon = R.drawable.ic_action_chat;
-        	
-        	// needs a title, icon and contact
+        	// needs a title, icon, contact, message to preview
         	mAdapter.add(new AlertListItem(title, icon, contact, message));
         	mAdapter.notifyDataSetChanged();
         }
  	}
 	
 	public void launchSettings() {
-		Toast.makeText(getApplicationContext(), "launched settings page", 
-				Toast.LENGTH_SHORT).show();
+		Intent intentLaunchSettings = new Intent(this, SettingsActivity.class);
+		startActivity(intentLaunchSettings);
 	}
 	
 	public void launchLocations() {
-		Toast.makeText(getApplicationContext(), "launched locations page", 
-				Toast.LENGTH_SHORT).show();
+		Intent intentEditLocations = new Intent(this, EditLocationsActivity.class);
+		startActivity(intentEditLocations);
 	}
 	
 
