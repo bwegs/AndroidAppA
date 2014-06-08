@@ -1,5 +1,8 @@
 package myApp.database;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import myApp.list.AlertListItem;
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,16 +18,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Database name
     private static final String DATABASE_NAME = "alertsManager";
  
-    // Table name
+    // Table names
     private static final String TABLE_ALERTS = "alerts";
+    private static final String TABLE_LOCATIONS = "locations";
  
-    // Columns names
+    // common column names
     private static final String KEY_NAME = "name";
-    private static final String KEY_CONTACT = "contact";
-    private static final String KEY_LOCATION = "location";
+    private static final String KEY_LOCATION_ID = "location";
+    
+    // alerts table columns names
+    private static final String KEY_CONTACT = "contact";  
     private static final String KEY_MESSAGE = "message";
     private static final String KEY_WHEN = "when";
     private static final String KEY_ICON = "icon";
+    
+ // locations table columns names
+    // TODO -- coords, radius
 	
 	public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,7 +44,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		String CREATE_ALERTS_TABLE = "CREATE TABLE " + TABLE_ALERTS + "("
                 + KEY_NAME + " TEXT,"
 				+ KEY_CONTACT + " TEXT,"
-				+ KEY_LOCATION + " TEXT,"
+				+ KEY_LOCATION_ID + " INTEGER,"
 				+ KEY_MESSAGE + " TEXT,"
 				+ KEY_WHEN + " TEXT,"
                 + KEY_ICON + " INTEGER" + ")";
@@ -66,7 +75,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         
         // locations should be stored in a separate table with unique IDs (here)
         // table itself will have corresponding ID, name, coordinates and radius
-        values.put(KEY_LOCATION, alert.getContact()); // NEEDS TO BE CHANGED
+        values.put(KEY_LOCATION_ID, alert.getContact()); // NEEDS TO BE CHANGED
         
         values.put(KEY_MESSAGE, alert.getMessage());  // Message to be sent
         values.put(KEY_WHEN, alert.getWhen());  // 'ENTER' or 'EXIT'
@@ -82,16 +91,70 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
  
         Cursor cursor = db.query(TABLE_ALERTS, new String[] { KEY_NAME,
-                KEY_CONTACT, KEY_LOCATION, KEY_MESSAGE, KEY_WHEN, KEY_ICON }, KEY_NAME + "=?",
+                KEY_CONTACT, KEY_LOCATION_ID, KEY_MESSAGE, KEY_WHEN, KEY_ICON }, KEY_NAME + "=?",
                 new String[] { name }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
  
         AlertListItem alert = new AlertListItem(cursor.getString(0),
-                cursor.getString(1), cursor.getString(2), cursor.getString(3),
+                cursor.getString(1), Integer.parseInt(cursor.getString(2)), cursor.getString(3),
                 cursor.getString(4), Integer.parseInt(cursor.getString(5)));
         // return alert
         return alert;
     }
+    
+ // Getting All Alerts
+    public List<AlertListItem> getAllAlerts() {
+        List<AlertListItem> alertList = new ArrayList<AlertListItem>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_ALERTS;
+ 
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+ 
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+            	AlertListItem alert = new AlertListItem();
+            	alert.setTitle(cursor.getString(0));
+            	alert.setContact(cursor.getString(1));
+            	alert.setLocation(Integer.parseInt(cursor.getString(2)));
+            	alert.setMessage(cursor.getString(3));
+            	alert.setWhen(cursor.getString(4));
+            	alert.setIcon(Integer.parseInt(cursor.getString(5)));
+                // Adding alert to list
+                alertList.add(alert);
+            } while (cursor.moveToNext());
+        }
+ 
+        // return alert list
+        return alertList;
+    }
+    
+ // Updating single alert
+    public int updateAlert(AlertListItem alert) {
+        SQLiteDatabase db = this.getWritableDatabase();
+ 
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, alert.getTitle());
+        values.put(KEY_CONTACT, alert.getContact());
+        values.put(KEY_LOCATION_ID, alert.getLocation());
+        values.put(KEY_MESSAGE, alert.getMessage());
+        values.put(KEY_WHEN, alert.getWhen());
+        values.put(KEY_ICON, alert.getIcon());
+ 
+        // updating row
+        return db.update(TABLE_ALERTS, values, KEY_NAME + " = ?",
+                new String[] { alert.getTitle() });
+    }
+ 
+    // Deleting single contact
+    public void deleteAlert(AlertListItem alert) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_ALERTS, KEY_NAME + " = ?",
+                new String[] { alert.getTitle() });
+        db.close();
+    }
+ 
 
 }

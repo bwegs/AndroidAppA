@@ -6,7 +6,7 @@ public class AlertListItem {
 	private String contact; // phone # or email
 	private String when;    // "enter" or "exit"
 	private String message; // the message being sent
-	private String location; // still unsure
+	private int location; // still unsure
 	
 	public AlertListItem(){
 		this.title = "Title (e.g. Leaving School)";
@@ -29,7 +29,7 @@ public class AlertListItem {
 		this.message = message;
 	}
 	
-	public AlertListItem(String title, String contact, String location, String message, String when, int icon){
+	public AlertListItem(String title, String contact, int location, String message, String when, int icon){
 		this.title = title;
 		this.icon = icon;
 		this.when = when;
@@ -44,6 +44,10 @@ public class AlertListItem {
 	
 	public int getIcon(){
 		return this.icon;
+	}
+	
+	public int getLocation() {
+		return location;
 	}
 	
 	public String getContact(){
@@ -64,6 +68,10 @@ public class AlertListItem {
 	
 	public void setIcon(int icon){
 		this.icon = icon;
+	}
+	
+	public void setLocation(int location) {
+		this.location = location;
 	}
 	
 	public void setContact(String contact){
