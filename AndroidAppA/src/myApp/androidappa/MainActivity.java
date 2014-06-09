@@ -3,6 +3,7 @@ package myApp.androidappa;
 
 import java.util.ArrayList;
 
+import myApp.database.DatabaseHandler;
 import myApp.list.AlertListAdapter;
 import myApp.list.AlertListItem;
 
@@ -12,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,11 +28,23 @@ public class MainActivity extends ListActivity {
 
 	private ArrayList<AlertListItem> alertListItems;
     private AlertListAdapter mAdapter;
+    private DatabaseHandler db;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Log.d("Check: ", "Attempting to insert...");
+		db = new DatabaseHandler(this);
+		AlertListItem insertMe = new AlertListItem("Finish Lab 4", R.drawable.ic_action_email, "mom@gmail.com",
+				"hey mom, just wanted to let you know that I finished lab 4!");
+		if(!db.alertExists(insertMe.getTitle())) {
+			db.addAlert(insertMe);
+			Log.d("Check: ", "Insert successful");
+		} else {
+			Log.d("Check: ", "Insert aborted, key " + insertMe.getTitle() + " already exists");
+		}
+
 
 		// need to load saved alerts from local storage into alertListItems
 		alertListItems = new ArrayList<AlertListItem>();
@@ -140,6 +154,7 @@ public class MainActivity extends ListActivity {
 		Intent intentEditLocations = new Intent(this, EditLocationsActivity.class);
 		startActivity(intentEditLocations);
 	}
+	
 	
 
 }

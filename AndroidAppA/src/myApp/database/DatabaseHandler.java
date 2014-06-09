@@ -16,7 +16,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
  
     // Database name
-    private static final String DATABASE_NAME = "alertsManager";
+    private static final String DATABASE_NAME = "alertsManager.db";
  
     // Table names
     private static final String TABLE_ALERTS = "alerts";
@@ -27,9 +27,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LOCATION_ID = "location";
     
     // alerts table columns names
+    private static final String KEY_ID = "id";
     private static final String KEY_CONTACT = "contact";  
     private static final String KEY_MESSAGE = "message";
-    private static final String KEY_WHEN = "when";
+    private static final String KEY_TRIGGER = "trigger";
     private static final String KEY_ICON = "icon";
     
  // locations table columns names
@@ -42,13 +43,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		String CREATE_ALERTS_TABLE = "CREATE TABLE " + TABLE_ALERTS + "("
-                + KEY_NAME + " TEXT,"
+//				+ KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_NAME + " TEXT PRIMARY KEY,"
 				+ KEY_CONTACT + " TEXT,"
 				+ KEY_LOCATION_ID + " INTEGER,"
 				+ KEY_MESSAGE + " TEXT,"
-				+ KEY_WHEN + " TEXT,"
+				+ KEY_TRIGGER + " TEXT,"
                 + KEY_ICON + " INTEGER" + ")";
+		
+		// TODO
+		// String CREATE_LOCATIONS_TABLE = "";
+		
         db.execSQL(CREATE_ALERTS_TABLE);
+        //db.execSQL(CREATE_LOCATIONS_TABLE);
 		
 	}
 
@@ -66,7 +73,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
 	
 	// Adding a new alert
-    void addAlert(AlertListItem alert) {
+    public void addAlert(AlertListItem alert) {
         SQLiteDatabase db = this.getWritableDatabase();
         
         ContentValues values = new ContentValues();
@@ -75,10 +82,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         
         // locations should be stored in a separate table with unique IDs (here)
         // table itself will have corresponding ID, name, coordinates and radius
-        values.put(KEY_LOCATION_ID, alert.getContact()); // NEEDS TO BE CHANGED
+        values.put(KEY_LOCATION_ID, alert.getLocation()); // NEEDS TO BE CHANGED
         
         values.put(KEY_MESSAGE, alert.getMessage());  // Message to be sent
-        values.put(KEY_WHEN, alert.getWhen());  // 'ENTER' or 'EXIT'
+        values.put(KEY_TRIGGER, alert.getWhen());  // 'ENTER' or 'EXIT'
         values.put(KEY_ICON, alert.getIcon());  // R.id of corresponding icon
  
         // Inserting Row
@@ -91,7 +98,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
  
         Cursor cursor = db.query(TABLE_ALERTS, new String[] { KEY_NAME,
-                KEY_CONTACT, KEY_LOCATION_ID, KEY_MESSAGE, KEY_WHEN, KEY_ICON }, KEY_NAME + "=?",
+                KEY_CONTACT, KEY_LOCATION_ID, KEY_MESSAGE, KEY_TRIGGER, KEY_ICON }, KEY_NAME + "=?",
                 new String[] { name }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -140,7 +147,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_CONTACT, alert.getContact());
         values.put(KEY_LOCATION_ID, alert.getLocation());
         values.put(KEY_MESSAGE, alert.getMessage());
-        values.put(KEY_WHEN, alert.getWhen());
+        values.put(KEY_TRIGGER, alert.getWhen());
         values.put(KEY_ICON, alert.getIcon());
  
         // updating row
@@ -156,5 +163,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
  
+    public boolean alertExists(String name) {
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	Cursor cursor = db.rawQuery("select 1 from " + TABLE_ALERTS + " where name=?", 
+    	     new String[] { name });
+    	boolean exists = (cursor.getCount() > 0);
+    	cursor.close();
+    	return exists;
+    }
 
 }

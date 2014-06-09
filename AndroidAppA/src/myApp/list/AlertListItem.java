@@ -1,5 +1,7 @@
 package myApp.list;
 
+import myApp.androidappa.R;
+
 public class AlertListItem {
 	private String title;   // name of the alert
 	private int icon;	    // id for email or text icon
@@ -9,9 +11,12 @@ public class AlertListItem {
 	private int location; // still unsure
 	
 	public AlertListItem(){
-		this.title = "Title (e.g. Leaving School)";
-		this.contact = "Contact (e.g. Mom)";
+		this.title = "alert name";
+		this.contact = "contact@email.com";
 		this.message = "Hey mom, I'm leaving school now. See you soon!";
+		this.icon = R.drawable.ic_action_email;
+		this.location = -1;
+		this.when = "EXIT";
 	}
 
 	public AlertListItem(String title, int icon, String contact, String message){
