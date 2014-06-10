@@ -140,10 +140,13 @@ public class MainActivity extends ListActivity {
         	String title = data.getStringExtra("TITLE");
         	String contact = data.getStringExtra("CONTACT");
         	int icon = data.getIntExtra("ICON", 0);
+        	int location = data.getIntExtra("LOCATION", -1);
         	String message = data.getStringExtra("MESSAGE");
+        	String when = data.getStringExtra("WHEN");
         	
         	// needs a title, icon, contact, message to preview
-        	AlertListItem addMe = new AlertListItem(title, icon, contact, message);
+        	AlertListItem addMe = new AlertListItem(title, contact, location, message, when, icon);
+        	//AlertListItem addMe = new AlertListItem(title, icon, contact, message);
         	db.addAlert(addMe);
         	mAdapter.add(addMe);
         	mAdapter.notifyDataSetChanged();

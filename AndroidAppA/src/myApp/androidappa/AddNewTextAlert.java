@@ -14,8 +14,8 @@ public class AddNewTextAlert extends Activity {
 	EditText phoneAdd;
 	// location
 	EditText message;
-	RadioButton arriveRadio;
-	RadioButton leaveRadio;
+	RadioButton enterRadio;
+	RadioButton exitRadio;
 	private DatabaseHandler db;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -24,8 +24,8 @@ public class AddNewTextAlert extends Activity {
 		alertName = (EditText) findViewById(R.id.editText1);
 		phoneAdd = (EditText) findViewById(R.id.editText2);
 		message = (EditText) findViewById(R.id.editText4);
-		arriveRadio = (RadioButton) findViewById(R.id.radio0);
-		leaveRadio = (RadioButton) findViewById(R.id.radio1);
+		enterRadio = (RadioButton) findViewById(R.id.radio0);
+		exitRadio = (RadioButton) findViewById(R.id.radio1);
 		db = new DatabaseHandler(this);
 	}
 
@@ -34,6 +34,11 @@ public class AddNewTextAlert extends Activity {
 		String name = alertName.getText().toString();
 		String phone = phoneAdd.getText().toString();
 		String text = message.getText().toString();
+		String when;
+		if(exitRadio.isChecked())
+			when = "EXIT";
+		else
+			when = "ENTER";
 
 		// Validate input
 		if (checkEmpty(name)) {
@@ -68,6 +73,9 @@ public class AddNewTextAlert extends Activity {
 					Toast.LENGTH_LONG).show();
 			return;
 		}
+		
+		// TODO -- CHECK IF LOCATION EXISTS IN LOCATION TABLE!
+		// location must be created before it can be used
 
 		Intent intentMessage = new Intent();
 
@@ -80,6 +88,8 @@ public class AddNewTextAlert extends Activity {
 		intentMessage.putExtra("CONTACT", phone);
 		intentMessage.putExtra("ICON", R.drawable.ic_action_chat);
 		intentMessage.putExtra("MESSAGE", text);
+		intentMessage.putExtra("WHEN", when);
+		intentMessage.putExtra("LOCATION", 3);
 
 		// if(arriveRadio.isChecked()) {
 		// intentMessage.putExtra("WHEN", "ENTER");

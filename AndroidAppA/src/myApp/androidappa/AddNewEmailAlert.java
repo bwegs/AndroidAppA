@@ -15,8 +15,8 @@ public class AddNewEmailAlert extends Activity {
 	EditText emailAdd;
 	// location
 	EditText message;
-	RadioButton arriveRadio;
-	RadioButton leaveRadio;
+	RadioButton enterRadio;
+	RadioButton exitRadio;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,8 +24,8 @@ public class AddNewEmailAlert extends Activity {
 		alertName = (EditText) findViewById(R.id.editText1);
 		emailAdd = (EditText) findViewById(R.id.editText2);
 		message = (EditText) findViewById(R.id.editText4);
-		arriveRadio = (RadioButton) findViewById(R.id.radio0);
-		leaveRadio = (RadioButton) findViewById(R.id.radio1);
+		enterRadio = (RadioButton) findViewById(R.id.radio0);
+		exitRadio = (RadioButton) findViewById(R.id.radio1);
 		db = new DatabaseHandler(this);
 	}
 
@@ -35,6 +35,11 @@ public class AddNewEmailAlert extends Activity {
 		String name = alertName.getText().toString();
 		String email = emailAdd.getText().toString();
 		String text = message.getText().toString();
+		String when;
+		if(exitRadio.isChecked())
+			when = "EXIT";
+		else
+			when = "ENTER";
 
 		// Validate user input!
 		if (checkEmpty(name)) {
@@ -76,6 +81,8 @@ public class AddNewEmailAlert extends Activity {
 		intentMessage.putExtra("CONTACT", email);
 		intentMessage.putExtra("ICON", R.drawable.ic_action_email);
 		intentMessage.putExtra("MESSAGE", text);
+		intentMessage.putExtra("WHEN", when);
+		intentMessage.putExtra("LOCATION", 4);
 
 		// if(arriveRadio.isChecked()) {
 		// intentMessage.putExtra("WHEN", "ENTER");
