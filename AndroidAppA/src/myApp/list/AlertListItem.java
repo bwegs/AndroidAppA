@@ -1,5 +1,13 @@
+/*
+ * Author - Ben Wegher
+ * Date   - 6/10/2014
+ * Class  - AlertListItem.java
+ * Description - This class specifies the attributes that define an Alert. 
+ */
+
 package myApp.list;
 
+import myApp.androidappa.Constants;
 import myApp.androidappa.R;
 
 public class AlertListItem {
@@ -8,13 +16,14 @@ public class AlertListItem {
 	private String contact; // phone # or email
 	private String when;    // "enter" or "exit"
 	private String message; // the message being sent
-	private int location; // still unsure
+	private int location;   // still unsure how it will be stored
 	
+	// Constructors
 	public AlertListItem(){
 		this.title = "alert name";
 		this.contact = "contact@email.com";
 		this.message = "Hey mom, I'm leaving school now. See you soon!";
-		this.icon = R.drawable.ic_action_email;
+		this.icon = Constants.EMAIL;
 		this.location = -1;
 		this.when = "EXIT";
 	}
@@ -43,12 +52,23 @@ public class AlertListItem {
 		this.location = location;
 	}
 
+	// GETTERS
 	public String getTitle(){
 		return this.title;
 	}
 	
 	public int getIcon(){
 		return this.icon;
+	}
+	
+	// Used to retrieve the drawable icon resource
+	public int getIconID() {
+		int returnMe = -1;
+		if(this.icon == Constants.EMAIL)
+			returnMe = R.drawable.ic_action_email;
+		else if(this.icon == Constants.TEXT)
+			returnMe = R.drawable.ic_action_chat;
+		return returnMe;
 	}
 	
 	public int getLocation() {
@@ -67,6 +87,7 @@ public class AlertListItem {
 		return message;
 	}
 	
+	// SETTERS
 	public void setTitle(String title){
 		this.title = title;
 	}

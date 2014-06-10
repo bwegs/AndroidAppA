@@ -1,3 +1,12 @@
+/*
+ * Author - Ben Wegher
+ * Date   - 6/10/2014
+ * Class  - DatabaseHandler.java
+ * Description - This class specifies all the necessary methods for my SQLite database.
+ * 				 Has 2 tables - alerts, locations. Currently alerts is the only one in use.
+ * 
+ */
+
 package myApp.database;
 
 import java.util.ArrayList;

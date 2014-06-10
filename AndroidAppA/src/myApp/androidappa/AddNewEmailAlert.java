@@ -1,3 +1,13 @@
+/*
+ * Author - Ben Wegher
+ * Date   - 6/10/2014
+ * Class  - AddNewEmailAlert.java
+ * Description - This activity is a form that lets the user create a specialized
+ * 				 email alert. After being validated, the relevant alert data is returned to 
+ * 				 MainActivity and inserted into the SQLite Database - alerts table. 
+ */
+
+
 package myApp.androidappa;
 
 import myApp.database.DatabaseHandler;
@@ -29,6 +39,7 @@ public class AddNewEmailAlert extends Activity {
 		db = new DatabaseHandler(this);
 	}
 
+	// onClick() method
 	public void addAlert(View V) {
 
 		// get user data and convert to Strings
@@ -42,20 +53,21 @@ public class AddNewEmailAlert extends Activity {
 			when = "ENTER";
 
 		// Validate user input!
-		if (checkEmpty(name)) {
+		if (checkEmpty(name)) { // Ensure name field is NOT empty
 			Toast.makeText(AddNewEmailAlert.this, "Give your alert a name!",
 					Toast.LENGTH_LONG).show();
 			return;
-		} else if (checkEmpty(email)) {
+		} else if (checkEmpty(email)) { // Ensure email field is NOT empty
 			Toast.makeText(AddNewEmailAlert.this,
 					"You forgot to enter an email address", Toast.LENGTH_LONG)
 					.show();
 			return;
+		// Do a tiny amount of email validation
 		} else if (!email.contains("@") || !email.contains(".")) {
 			Toast.makeText(AddNewEmailAlert.this,
 					"That email address isn't valid", Toast.LENGTH_LONG).show();
 			return;
-		} else if (checkEmpty(text)) {
+		} else if (checkEmpty(text)) { // Ensure message field is NOT empty
 			Toast.makeText(AddNewEmailAlert.this,
 					"You need to enter a message to send to " + email,
 					Toast.LENGTH_LONG).show();
@@ -79,25 +91,18 @@ public class AddNewEmailAlert extends Activity {
 
 		intentMessage.putExtra("TITLE", name);
 		intentMessage.putExtra("CONTACT", email);
-		intentMessage.putExtra("ICON", R.drawable.ic_action_email);
+		intentMessage.putExtra("ICON", Constants.EMAIL);
 		intentMessage.putExtra("MESSAGE", text);
 		intentMessage.putExtra("WHEN", when);
 		intentMessage.putExtra("LOCATION", 4);
 
-		// if(arriveRadio.isChecked()) {
-		// intentMessage.putExtra("WHEN", "ENTER");
-		// } else {
-		// intentMessage.putExtra("WHEN", "LEAVE");
-		// }
-
-		// put the message in Intent
-		// intentMessage.putExtra("ITEM", item);
 
 		setResult(Constants.EMAIL, intentMessage);
 
 		finish();
 	}
 
+	// Checks if the given string is empty
 	private boolean checkEmpty(String s) {
 		if (s.matches(""))
 			return true;

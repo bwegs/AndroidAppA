@@ -14,14 +14,18 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.os.Build;
 
 public class MainActivity extends ListActivity {
@@ -36,30 +40,14 @@ public class MainActivity extends ListActivity {
 		setContentView(R.layout.activity_main);
 		Log.d("Check: ", "Attempting to insert...");
 		db = new DatabaseHandler(this);
-		AlertListItem insertMe = new AlertListItem("Finish Lab 4", R.drawable.ic_action_email, "mom@gmail.com",
-				"hey mom, just wanted to let you know that I finished lab 4!");
-		if(!db.alertExists(insertMe.getTitle())) {
-			db.addAlert(insertMe);
-			Log.d("Check: ", "Insert successful");
-		} else {
-			Log.d("Check: ", "Insert aborted, key " + insertMe.getTitle() + " already exists");
-		}
 
-
-		// need to load saved alerts from local storage into alertListItems
+		// create an ArrayList of AlertListItems
 		alertListItems = new ArrayList<AlertListItem>();
-		// hard coded for testing purposes
-//		alertListItems.add(new AlertListItem("Finish Lab 4", R.drawable.ic_action_email, "mom@gmail.com",
-//				"hey mom, just wanted to let you know that I finished lab 4!"));
-		//alertListItems.add(new AlertListItem());
-//		alertListItems.add(new AlertListItem("Test long title and message", R.drawable.ic_action_chat, "9706914011",
-//				"hey mom, it's me, Bob, just wanted to text you a really long message" +
-//				"because I love you and I want you to know that I appreciate everything" +
-//				"that you've ever done for me, which is a lot, so thank you.. also this is an" +
-//				"awesome run on sentence."));
 		
+		// load saved alerts from local storage into alertListItems
 		alertListItems = db.getAllAlerts();
 		
+		// set the list adapter
 		mAdapter = new AlertListAdapter(this, alertListItems);
 		setListAdapter(mAdapter);
 		db.close();
@@ -67,12 +55,44 @@ public class MainActivity extends ListActivity {
 		android.app.ActionBar action = getActionBar();
 		action.show();
 		
-//		if (savedInstanceState == null) {
-//			getSupportFragmentManager().beginTransaction()
-//					.add(R.id.container, new PlaceholderFragment()).commit();
-//		}
+		registerForContextMenu(getListView());
 	}
+	
+	public boolean onContextItemSelected(MenuItem item) {
+    	AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
+    	
+    	switch(item.getItemId()) {
+    	case R.id.delete:
+    		//Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+    		AlertListItem deleteMe = (AlertListItem) mAdapter.getItem((int)info.id);
+    		
+    		// **********
+    		db.deleteAlert(deleteMe);  // remove alert from database (don't have to do this)
+    		mAdapter.delete(deleteMe); // remove from adapter
+    		
+    		mAdapter.notifyDataSetChanged();
+    		
+    		Toast.makeText(MainActivity.this, deleteMe.getTitle() + " was deleted.",
+					Toast.LENGTH_LONG).show();
+    		
+    		//startActivity(smsIntent);
+    		return true;
+    	case R.id.edit:
+    		//Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 
+    		//startActivity(emailIntent);
+    		return true;
+    	default:
+    		return super.onContextItemSelected(item);
+    	}
+    }
+
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    	super.onCreateContextMenu(menu, v, menuInfo);
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.context_menu, menu);
+    }
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 

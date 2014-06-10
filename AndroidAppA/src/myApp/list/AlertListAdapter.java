@@ -27,6 +27,10 @@ public class AlertListAdapter extends BaseAdapter {
 	public void add(AlertListItem item) {
 		alertItems.add(item);
 	}
+	
+	public boolean delete(AlertListItem item) {
+		return alertItems.remove(item);
+	}
 
 	@Override
 	public int getCount() {
@@ -56,7 +60,7 @@ public class AlertListAdapter extends BaseAdapter {
         TextView txtContact = (TextView)convertView.findViewById(R.id.contact);
         TextView txtMessage = (TextView)convertView.findViewById(R.id.message);
          
-        imgIcon.setImageResource(alertItems.get(position).getIcon());        
+        imgIcon.setImageResource(alertItems.get(position).getIconID());     
         txtTitle.setText(alertItems.get(position).getTitle());
         txtContact.setText(alertItems.get(position).getContact());
         txtMessage.setText(alertItems.get(position).getMessage());
