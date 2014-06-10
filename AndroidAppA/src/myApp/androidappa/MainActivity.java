@@ -49,14 +49,16 @@ public class MainActivity extends ListActivity {
 		// need to load saved alerts from local storage into alertListItems
 		alertListItems = new ArrayList<AlertListItem>();
 		// hard coded for testing purposes
-		alertListItems.add(new AlertListItem("Finish Lab 4", R.drawable.ic_action_email, "mom@gmail.com",
-				"hey mom, just wanted to let you know that I finished lab 4!"));
+//		alertListItems.add(new AlertListItem("Finish Lab 4", R.drawable.ic_action_email, "mom@gmail.com",
+//				"hey mom, just wanted to let you know that I finished lab 4!"));
 		//alertListItems.add(new AlertListItem());
-		alertListItems.add(new AlertListItem("Test long title and message", R.drawable.ic_action_chat, "9706914011",
-				"hey mom, it's me, Bob, just wanted to text you a really long message" +
-				"because I love you and I want you to know that I appreciate everything" +
-				"that you've ever done for me, which is a lot, so thank you.. also this is an" +
-				"awesome run on sentence."));
+//		alertListItems.add(new AlertListItem("Test long title and message", R.drawable.ic_action_chat, "9706914011",
+//				"hey mom, it's me, Bob, just wanted to text you a really long message" +
+//				"because I love you and I want you to know that I appreciate everything" +
+//				"that you've ever done for me, which is a lot, so thank you.. also this is an" +
+//				"awesome run on sentence."));
+		
+		alertListItems = db.getAllAlerts();
 		
 		mAdapter = new AlertListAdapter(this, alertListItems);
 		setListAdapter(mAdapter);
@@ -140,7 +142,9 @@ public class MainActivity extends ListActivity {
         	String message = data.getStringExtra("MESSAGE");
         	
         	// needs a title, icon, contact, message to preview
-        	mAdapter.add(new AlertListItem(title, icon, contact, message));
+        	AlertListItem addMe = new AlertListItem(title, icon, contact, message);
+        	db.addAlert(addMe);
+        	mAdapter.add(addMe);
         	mAdapter.notifyDataSetChanged();
         }
  	}

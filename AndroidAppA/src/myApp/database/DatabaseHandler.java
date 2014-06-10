@@ -111,8 +111,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
  // Getting All Alerts
-    public List<AlertListItem> getAllAlerts() {
-        List<AlertListItem> alertList = new ArrayList<AlertListItem>();
+    public ArrayList<AlertListItem> getAllAlerts() {
+        ArrayList<AlertListItem> alertList = new ArrayList<AlertListItem>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_ALERTS;
  
