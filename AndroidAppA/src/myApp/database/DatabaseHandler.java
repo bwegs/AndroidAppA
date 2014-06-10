@@ -169,6 +169,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	     new String[] { name });
     	boolean exists = (cursor.getCount() > 0);
     	cursor.close();
+    	db.close();
     	return exists;
     }
 

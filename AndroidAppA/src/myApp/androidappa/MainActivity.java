@@ -62,6 +62,7 @@ public class MainActivity extends ListActivity {
 		
 		mAdapter = new AlertListAdapter(this, alertListItems);
 		setListAdapter(mAdapter);
+		db.close();
 		
 		android.app.ActionBar action = getActionBar();
 		action.show();
