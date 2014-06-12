@@ -7,8 +7,6 @@ import myApp.database.DatabaseHandler;
 import myApp.list.AlertListAdapter;
 import myApp.list.AlertListItem;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.app.ListActivity;
 import android.content.Intent;
@@ -22,11 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.os.Build;
+
 
 public class MainActivity extends ListActivity {
 
@@ -63,10 +60,9 @@ public class MainActivity extends ListActivity {
     	
     	switch(item.getItemId()) {
     	case R.id.delete:
-    		//Intent smsIntent = new Intent(Intent.ACTION_VIEW);
     		AlertListItem deleteMe = (AlertListItem) mAdapter.getItem((int)info.id);
     		
-    		// **********
+    		// ********** TODO Confirmation or Undo feature
     		db.deleteAlert(deleteMe);  // remove alert from database (don't have to do this)
     		mAdapter.delete(deleteMe); // remove from adapter
     		
@@ -74,8 +70,6 @@ public class MainActivity extends ListActivity {
     		
     		Toast.makeText(MainActivity.this, deleteMe.getTitle() + " was deleted.",
 					Toast.LENGTH_LONG).show();
-    		
-    		//startActivity(smsIntent);
     		return true;
     	case R.id.edit:
     		//Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);

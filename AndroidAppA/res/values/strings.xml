@@ -6,6 +6,10 @@
     <string name="action_locations">Edit Locations</string>
     <string name="new_alert">New Alert</string>
     
+    <!-- context_menu strings -->
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    
     <string name="alerts_header">My Alerts</string>
     <string name="add_alert_button">Add New Alert</string>
     <string name="radio0">Text</string>

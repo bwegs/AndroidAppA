@@ -10,8 +10,6 @@
 package myApp.database;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import myApp.list.AlertListItem;
 import android.content.ContentValues;
 import android.content.Context;
@@ -102,7 +100,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 	
- // Getting single alert
+    // Getting single alert by name (Primary Key)
     AlertListItem getAlert(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
  
@@ -147,7 +145,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return alertList;
     }
     
- // Updating single alert
+    // Updating single alert
     public int updateAlert(AlertListItem alert) {
         SQLiteDatabase db = this.getWritableDatabase();
  
