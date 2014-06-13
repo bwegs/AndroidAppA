@@ -7,13 +7,18 @@
  * 				 MainActivity and inserted into the SQLite Database - alerts table. 
  */
 
-
 package myApp.androidappa;
+
 
 import myApp.database.DatabaseHandler;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract.CommonDataKinds.Email;
+import android.provider.ContactsContract.Contacts;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -32,7 +37,7 @@ public class AddNewEmailAlert extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_new_email_alert);
 		alertName = (EditText) findViewById(R.id.editText1);
-		emailAdd = (EditText) findViewById(R.id.editText2);
+		emailAdd = (EditText) findViewById(R.id.editTextEmail);
 		message = (EditText) findViewById(R.id.editText4);
 		enterRadio = (RadioButton) findViewById(R.id.radio0);
 		exitRadio = (RadioButton) findViewById(R.id.radio1);
@@ -47,7 +52,7 @@ public class AddNewEmailAlert extends Activity {
 		String email = emailAdd.getText().toString();
 		String text = message.getText().toString();
 		String when;
-		if(exitRadio.isChecked())
+		if (exitRadio.isChecked())
 			when = "EXIT";
 		else
 			when = "ENTER";
@@ -62,7 +67,7 @@ public class AddNewEmailAlert extends Activity {
 					"You forgot to enter an email address", Toast.LENGTH_LONG)
 					.show();
 			return;
-		// Do a tiny amount of email validation
+			// Do a tiny amount of email validation
 		} else if (!email.contains("@") || !email.contains(".")) {
 			Toast.makeText(AddNewEmailAlert.this,
 					"That email address isn't valid", Toast.LENGTH_LONG).show();
@@ -76,7 +81,8 @@ public class AddNewEmailAlert extends Activity {
 
 		// check for duplicate alert name
 		if (db.alertExists(name)) {
-			Toast.makeText(AddNewEmailAlert.this,
+			Toast.makeText(
+					AddNewEmailAlert.this,
 					"An alert with that name already exists! Please enter a new name.",
 					Toast.LENGTH_LONG).show();
 			return;
@@ -96,7 +102,6 @@ public class AddNewEmailAlert extends Activity {
 		intentMessage.putExtra("WHEN", when);
 		intentMessage.putExtra("LOCATION", 4);
 
-
 		setResult(Constants.EMAIL, intentMessage);
 
 		finish();
@@ -108,4 +113,53 @@ public class AddNewEmailAlert extends Activity {
 			return true;
 		return false;
 	}
+
+	// launches a contact picker to select email address from contacts
+	public void launchContactPicker(View view) {
+		Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+				Contacts.CONTENT_URI);
+		startActivityForResult(contactPickerIntent,
+				Constants.CONTACT_PICKER_RESULT);
+	}
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == RESULT_OK) {
+			if (requestCode == Constants.CONTACT_PICKER_RESULT) {
+
+				Uri result = data.getData();
+				Log.v(Constants.DEBUG_TAG, "Got a result: " + result.toString());
+
+				// get the contact id from the Uri
+				String id = result.getLastPathSegment();
+
+				// query for everything email
+				Cursor cursor = getContentResolver().query(Email.CONTENT_URI,
+						null, Email.CONTACT_ID + "=?", new String[] { id },
+						null);
+				
+				// TODO -- Need to handle multiple email addresses
+				// i.e. let user pick between them
+				String email = "";
+				if (cursor.moveToFirst()) {
+				    int emailIdx = cursor.getColumnIndex(Email.DATA);
+				    email = cursor.getString(emailIdx);
+				    Log.v(Constants.DEBUG_TAG, "Got email: " + email);
+				    
+				    EditText emailEntry = (EditText)findViewById(R.id.editTextEmail);
+				    emailEntry.setText(email);
+				}
+				if (checkEmpty(email)) {
+			        Toast.makeText(AddNewEmailAlert.this, "No email found for contact.", Toast.LENGTH_LONG).show();
+			    }
+				
+			} else {
+				// gracefully handle failure
+				Log.d(Constants.DEBUG_TAG, "Warning: activity result not ok");
+			}
+		}
+
+	}
+
 }

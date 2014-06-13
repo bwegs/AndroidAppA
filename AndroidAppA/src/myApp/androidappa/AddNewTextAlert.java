@@ -33,7 +33,7 @@ public class AddNewTextAlert extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_new_text_alert);
 		alertName = (EditText) findViewById(R.id.editText1);
-		phoneAdd = (EditText) findViewById(R.id.editText2);
+		phoneAdd = (EditText) findViewById(R.id.editTextEmail);
 		message = (EditText) findViewById(R.id.editText4);
 		enterRadio = (RadioButton) findViewById(R.id.radio0);
 		exitRadio = (RadioButton) findViewById(R.id.radio1);

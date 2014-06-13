@@ -1,6 +1,5 @@
 package myApp.androidappa;
 
-
 import java.util.ArrayList;
 
 import myApp.database.DatabaseHandler;
@@ -24,13 +23,12 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-
 public class MainActivity extends ListActivity {
 
 	private ArrayList<AlertListItem> alertListItems;
-    private AlertListAdapter mAdapter;
-    private DatabaseHandler db;
-	
+	private AlertListAdapter mAdapter;
+	private DatabaseHandler db;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,53 +38,59 @@ public class MainActivity extends ListActivity {
 
 		// create an ArrayList of AlertListItems
 		alertListItems = new ArrayList<AlertListItem>();
-		
+
 		// load saved alerts from local storage into alertListItems
 		alertListItems = db.getAllAlerts();
-		
+
 		// set the list adapter
 		mAdapter = new AlertListAdapter(this, alertListItems);
 		setListAdapter(mAdapter);
 		db.close();
-		
+
 		android.app.ActionBar action = getActionBar();
 		action.show();
-		
+
 		registerForContextMenu(getListView());
 	}
-	
+
 	public boolean onContextItemSelected(MenuItem item) {
-    	AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
-    	
-    	switch(item.getItemId()) {
-    	case R.id.delete:
-    		AlertListItem deleteMe = (AlertListItem) mAdapter.getItem((int)info.id);
-    		
-    		// ********** TODO Confirmation or Undo feature
-    		db.deleteAlert(deleteMe);  // remove alert from database (don't have to do this)
-    		mAdapter.delete(deleteMe); // remove from adapter
-    		
-    		mAdapter.notifyDataSetChanged();
-    		
-    		Toast.makeText(MainActivity.this, deleteMe.getTitle() + " was deleted.",
-					Toast.LENGTH_LONG).show();
-    		return true;
-    	case R.id.edit:
-    		//Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
 
-    		//startActivity(emailIntent);
-    		return true;
-    	default:
-    		return super.onContextItemSelected(item);
-    	}
-    }
+		switch (item.getItemId()) {
+		case R.id.delete:
+			AlertListItem deleteMe = (AlertListItem) mAdapter
+					.getItem((int) info.id);
 
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-    	super.onCreateContextMenu(menu, v, menuInfo);
-    	MenuInflater inflater = getMenuInflater();
-    	inflater.inflate(R.menu.context_menu, menu);
-    }
-	
+			// ********** TODO Confirmation or Undo feature
+			db.deleteAlert(deleteMe); // remove alert from database (don't have
+										// to do this)
+			mAdapter.delete(deleteMe); // remove from adapter
+
+			mAdapter.notifyDataSetChanged();
+
+			Toast.makeText(MainActivity.this,
+					deleteMe.getTitle() + " was deleted.", Toast.LENGTH_LONG)
+					.show();
+			return true;
+		case R.id.edit:
+			// Intent emailIntent = new
+			// Intent(android.content.Intent.ACTION_SEND);
+
+			// startActivity(emailIntent);
+			return true;
+		default:
+			return super.onContextItemSelected(item);
+		}
+	}
+
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.context_menu, menu);
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -126,57 +130,75 @@ public class MainActivity extends ListActivity {
 					false);
 			return rootView;
 		}
+		
+		/** Called when the user clicks the Send button */
+        public void sendMessage(View view) {
+            Intent intent = new Intent(getActivity(), AddNewEmailAlert.class);
+
+            startActivity(intent);
+        }
 	}
-	
+
 	// triggered as onClick() event of 'Add New Alert' button
 	public void addNewAlert(View v) {
 		RadioButton rb;
 		rb = (RadioButton) findViewById(R.id.radio0);
-		
+
 		// if radio0 is filled then launch new text alert activity
-		if(rb.isChecked()) {
-			Intent intentAddNewAlert = new Intent(this,AddNewTextAlert.class);
-	 	    startActivityForResult(intentAddNewAlert, Constants.TEXT);
-		} 
+		if (rb.isChecked()) {
+			Intent intentAddNewAlert = new Intent(this, AddNewTextAlert.class);
+			startActivityForResult(intentAddNewAlert, Constants.TEXT);
+		}
 		// else radio1 is filled then launch new email alert activity
 		else {
-			Intent intentAddNewAlert = new Intent(this,AddNewEmailAlert.class);
-	 	    startActivityForResult(intentAddNewAlert, Constants.EMAIL);
+			Intent intentAddNewAlert = new Intent(this, AddNewEmailAlert.class);
+			startActivityForResult(intentAddNewAlert, Constants.EMAIL);
 		}
-		
-		
+
 	}
-	
-	protected void onActivityResult(int requestCode, int resultCode, Intent data){
- 		super.onActivityResult(requestCode, resultCode, data);
- 		
-        if(data != null) {	 	
-        	String title = data.getStringExtra("TITLE");
-        	String contact = data.getStringExtra("CONTACT");
-        	int icon = data.getIntExtra("ICON", 0);
-        	int location = data.getIntExtra("LOCATION", -1);
-        	String message = data.getStringExtra("MESSAGE");
-        	String when = data.getStringExtra("WHEN");
-        	
-        	// needs a title, icon, contact, message to preview
-        	AlertListItem addMe = new AlertListItem(title, contact, location, message, when, icon);
-        	//AlertListItem addMe = new AlertListItem(title, icon, contact, message);
-        	db.addAlert(addMe);
-        	mAdapter.add(addMe);
-        	mAdapter.notifyDataSetChanged();
-        }
- 	}
-	
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == RESULT_OK) {
+			// 
+			if (requestCode == Constants.EMAIL || requestCode == Constants.TEXT) {
+				String title = data.getStringExtra("TITLE");
+				String contact = data.getStringExtra("CONTACT");
+				int icon = data.getIntExtra("ICON", 0);
+				int location = data.getIntExtra("LOCATION", -1);
+				String message = data.getStringExtra("MESSAGE");
+				String when = data.getStringExtra("WHEN");
+
+				// needs a title, icon, contact, message to preview
+				AlertListItem addMe = new AlertListItem(title, contact,
+						location, message, when, icon);
+
+				db.addAlert(addMe);	 // add the alert to our database
+				mAdapter.add(addMe); // add the alert to the list adapter
+				mAdapter.notifyDataSetChanged(); // notify the list adapter
+			} 
+			
+		// result was not OK	
+		} else {
+			
+			Log.w("Warning", "Warning: activity result not ok");
+		}
+	}
+
 	public void launchSettings() {
 		Intent intentLaunchSettings = new Intent(this, SettingsActivity.class);
+		
 		startActivity(intentLaunchSettings);
 	}
-	
+
 	public void launchLocations() {
-		Intent intentEditLocations = new Intent(this, EditLocationsActivity.class);
+		Intent intentEditLocations = new Intent(this,
+				EditLocationsActivity.class);
 		startActivity(intentEditLocations);
 	}
 	
-	
+
+    
 
 }
