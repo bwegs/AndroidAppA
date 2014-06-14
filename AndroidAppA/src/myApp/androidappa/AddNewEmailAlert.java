@@ -128,31 +128,48 @@ public class AddNewEmailAlert extends Activity {
 		if (resultCode == RESULT_OK) {
 			if (requestCode == Constants.CONTACT_PICKER_RESULT) {
 
-				Uri result = data.getData();
-				Log.v(Constants.DEBUG_TAG, "Got a result: " + result.toString());
-
-				// get the contact id from the Uri
-				String id = result.getLastPathSegment();
-
-				// query for everything email
-				Cursor cursor = getContentResolver().query(Email.CONTENT_URI,
-						null, Email.CONTACT_ID + "=?", new String[] { id },
-						null);
-				
 				// TODO -- Need to handle multiple email addresses
 				// i.e. let user pick between them
-				String email = "";
-				if (cursor.moveToFirst()) {
-				    int emailIdx = cursor.getColumnIndex(Email.DATA);
-				    email = cursor.getString(emailIdx);
-				    Log.v(Constants.DEBUG_TAG, "Got email: " + email);
-				    
-				    EditText emailEntry = (EditText)findViewById(R.id.editTextEmail);
-				    emailEntry.setText(email);
-				}
-				if (checkEmpty(email)) {
-			        Toast.makeText(AddNewEmailAlert.this, "No email found for contact.", Toast.LENGTH_LONG).show();
-			    }
+				Cursor cursor = null;
+	            String email = "";
+	            try {
+	            	
+	                Uri result = data.getData();
+	                Log.v(Constants.DEBUG_TAG, "Got a contact result: "
+	                        + result.toString());
+
+	                // get the contact id from the Uri
+	                String id = result.getLastPathSegment();
+
+	                // query for everything email
+	                cursor = getContentResolver().query(Email.CONTENT_URI,
+	                        null, Email.CONTACT_ID + "=?", new String[] { id },
+	                        null);
+
+	                int emailInd = cursor.getColumnIndex(Email.DATA);
+
+	                // let's just get the first email
+	                if (cursor.moveToFirst()) {
+	                    email = cursor.getString(emailInd);
+	                    Log.v(Constants.DEBUG_TAG, "Got email: " + email);
+	                } else {
+	                	//Toast.makeText(AddNewEmailAlert.this, "No email found for contact.", Toast.LENGTH_LONG).show();
+	                    Log.w(Constants.DEBUG_TAG, "No results");
+	                }
+	            } catch (Exception e) {
+	                Log.e(Constants.DEBUG_TAG, "Failed to get email data", e);
+	            } finally {
+	                if (cursor != null) {
+	                    cursor.close();
+	                }
+	                EditText emailEntry = (EditText) findViewById(R.id.editTextEmail);
+	                emailEntry.setText(email);
+	                if (email.length() == 0) {
+	                    Toast.makeText(this, "No email found for contact.",
+	                            Toast.LENGTH_LONG).show();
+	                }
+
+	            }
 				
 			} else {
 				// gracefully handle failure

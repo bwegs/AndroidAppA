@@ -13,7 +13,12 @@ package myApp.androidappa;
 import myApp.database.DatabaseHandler;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.Contacts;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -33,7 +38,7 @@ public class AddNewTextAlert extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_new_text_alert);
 		alertName = (EditText) findViewById(R.id.editText1);
-		phoneAdd = (EditText) findViewById(R.id.editTextEmail);
+		phoneAdd = (EditText) findViewById(R.id.editTextPhone);
 		message = (EditText) findViewById(R.id.editText4);
 		enterRadio = (RadioButton) findViewById(R.id.radio0);
 		exitRadio = (RadioButton) findViewById(R.id.radio1);
@@ -128,5 +133,70 @@ public class AddNewTextAlert extends Activity {
 
 		return true;
 	}
+	
+	// launches a contact picker to select phone # from contacts
+		public void launchContactPicker(View view) {
+			Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+					Contacts.CONTENT_URI);
+			startActivityForResult(contactPickerIntent,
+					Constants.CONTACT_PICKER_RESULT);
+		}
+
+		protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+			super.onActivityResult(requestCode, resultCode, data);
+
+			if (resultCode == RESULT_OK) {
+				if (requestCode == Constants.CONTACT_PICKER_RESULT) {
+
+					// TODO -- Need to handle multiple phone #s
+					// i.e. let user pick between them
+					Cursor cursor = null;
+		            String phone = "";
+		            try {
+		            	
+		                Uri result = data.getData();
+		                Log.v(Constants.DEBUG_TAG, "Got a contact result: "
+		                        + result.toString());
+
+		                // get the contact id from the Uri
+		                String id = result.getLastPathSegment();
+
+		                // query for everything phone
+		                cursor = getContentResolver().query(Phone.CONTENT_URI,
+		                        null, Phone.CONTACT_ID + "=?", new String[] { id },
+		                        null);
+
+		                int phoneInd = cursor.getColumnIndex(Phone.DATA);
+
+		                // let's just get the first text
+		                if (cursor.moveToFirst()) {
+		                    phone = cursor.getString(phoneInd);
+		                    Log.v(Constants.DEBUG_TAG, "Got phone: " + phone);
+		                } else {
+		                	//Toast.makeText(AddNewTextAlert.this, "No phone found for contact.", Toast.LENGTH_LONG).show();
+		                    Log.w(Constants.DEBUG_TAG, "No results");
+		                }
+		            } catch (Exception e) {
+		                Log.e(Constants.DEBUG_TAG, "Failed to get phone data", e);
+		            } finally {
+		                if (cursor != null) {
+		                    cursor.close();
+		                }
+		                EditText phoneEntry = (EditText) findViewById(R.id.editTextPhone);
+		                phoneEntry.setText(phone);
+		                if (phone.length() == 0) {
+		                    Toast.makeText(this, "No phone number found for contact.",
+		                            Toast.LENGTH_LONG).show();
+		                }
+
+		            }
+					
+				} else {
+					// gracefully handle failure
+					Log.d(Constants.DEBUG_TAG, "Warning: activity result not ok");
+				}
+			}
+
+		}
 
 }
