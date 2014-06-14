@@ -67,14 +67,9 @@ public class AddNewTextAlert extends Activity {
 					"You forgot to enter a phone number", Toast.LENGTH_LONG)
 					.show();
 			return;
-		// Check length of phone number
-		} else if (phone.length() != 7 && phone.length() != 10) { 
+		} else if (!checkPhone(phone)) { // Ensure phone # passes validation
 			Toast.makeText(AddNewTextAlert.this,
-					"That phone number isn't valid", Toast.LENGTH_LONG).show();
-			return;
-		} else if (!onlyNumeric(phone)) { // Ensure phone # contains only numbers
-			Toast.makeText(AddNewTextAlert.this,
-					"Phone number must contain only numbers " + phone,
+					"Phone number must contain only numbers, dashes or parentheses " + phone,
 					Toast.LENGTH_LONG).show();
 			return;
 		} else if (checkEmpty(text)) { // Ensure message is NOT empty
@@ -123,12 +118,22 @@ public class AddNewTextAlert extends Activity {
 		return false;
 	}
 
-	// Checks if the given string consists solely of numbers
-	private boolean onlyNumeric(String s) {
-		try {
-			Long.parseLong(s);
-		} catch (NumberFormatException e) {
-			return false;
+	// Checks if the given string consists solely of numbers, '-', '(', ')' or ' '
+	private boolean checkPhone(String s) {
+		char[] phone = s.toCharArray();
+		char[] check = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+						'-', '(', ')', ' '};
+
+		boolean checkVal = false;
+		// compare each value of phone # to our check array
+		for(int i = 0; i < phone.length; i++) {
+			for(char c : check)
+				if(phone[i] == c)
+					checkVal = true;
+			if(checkVal == false)
+				return false;
+			else
+				checkVal = false;
 		}
 
 		return true;
@@ -172,6 +177,10 @@ public class AddNewTextAlert extends Activity {
 		                if (cursor.moveToFirst()) {
 		                    phone = cursor.getString(phoneInd);
 		                    Log.v(Constants.DEBUG_TAG, "Got phone: " + phone);
+		                    while(cursor.moveToNext()) {
+		                    	phone = cursor.getString(phoneInd);
+		                    	Log.v(Constants.DEBUG_TAG, "Also found phone: " + phone);
+		                    }
 		                } else {
 		                	//Toast.makeText(AddNewTextAlert.this, "No phone found for contact.", Toast.LENGTH_LONG).show();
 		                    Log.w(Constants.DEBUG_TAG, "No results");

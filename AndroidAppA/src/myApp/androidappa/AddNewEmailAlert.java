@@ -152,6 +152,10 @@ public class AddNewEmailAlert extends Activity {
 	                if (cursor.moveToFirst()) {
 	                    email = cursor.getString(emailInd);
 	                    Log.v(Constants.DEBUG_TAG, "Got email: " + email);
+	                    while(cursor.moveToNext()) {
+	                    	email = cursor.getString(emailInd);
+	                    	Log.v(Constants.DEBUG_TAG, "Also found email: " + email);
+	                    }
 	                } else {
 	                	//Toast.makeText(AddNewEmailAlert.this, "No email found for contact.", Toast.LENGTH_LONG).show();
 	                    Log.w(Constants.DEBUG_TAG, "No results");
