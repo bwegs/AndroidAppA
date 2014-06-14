@@ -82,13 +82,13 @@
                 android:inputType="textPersonName"
                 android:maxLength="30" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/button3"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="launchContactPicker"
-                android:text="Choose" />
+                android:src="@drawable/ic_action_person" />
 
         </LinearLayout>
 

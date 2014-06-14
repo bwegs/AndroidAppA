@@ -102,7 +102,7 @@ public class AddNewEmailAlert extends Activity {
 		intentMessage.putExtra("WHEN", when);
 		intentMessage.putExtra("LOCATION", 4);
 
-		setResult(Constants.EMAIL, intentMessage);
+		setResult(RESULT_OK, intentMessage);
 
 		finish();
 	}

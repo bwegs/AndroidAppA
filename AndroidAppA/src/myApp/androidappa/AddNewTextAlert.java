@@ -106,7 +106,7 @@ public class AddNewTextAlert extends Activity {
 		intentMessage.putExtra("LOCATION", 3);
 
 
-		setResult(Constants.TEXT, intentMessage);
+		setResult(RESULT_OK, intentMessage);
 
 		finish();
 	}
