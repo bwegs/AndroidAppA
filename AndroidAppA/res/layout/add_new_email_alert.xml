@@ -21,9 +21,8 @@
             android:drawablePadding="3dp"
             android:drawableRight="@drawable/ic_action_email"
             android:fontFamily="Roboto"
-            android:text="New Email Alert"
+            android:text="@string/new_email_alert"
             android:textAppearance="?android:attr/textAppearanceLarge" >
-
         </TextView>
 
         <LinearLayout
@@ -34,21 +33,20 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:contentDescription="Give this alert a name"
-                android:text="Name:"
+                android:layout_marginRight="3dp"
+                android:contentDescription="@string/name_description"
+                android:text="@string/name_label"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <EditText
                 android:id="@+id/editText1"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="ex: Leaving Work"
+                android:hint="@string/name_hint"
                 android:inputType="textPersonName"
                 android:maxLength="25" />
-
         </LinearLayout>
 
         <TextView
@@ -57,10 +55,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="10dp"
-            android:text="(Give this alert a meaningful name)"
+            android:text="@string/name_description"
             android:textSize="10sp" />
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/RelativeLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
@@ -68,30 +67,40 @@
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="Email:"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="3dp"
+                android:text="@string/email_label"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <ImageButton
+                android:id="@+id/button3"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="0"
+                android:contentDescription="@string/contacts_button_description"
+                android:minHeight="35dip"
+                android:minWidth="35dip"
+                android:onClick="launchContactPicker"
+                android:src="@drawable/ic_action_person" />
 
             <EditText
                 android:id="@+id/editTextEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/button3"
+                android:layout_toRightOf="@id/textView4"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="mom@gmail.com"
-                android:inputType="textPersonName"
+                android:hint="@string/email_hint"
+                android:inputType="textEmailAddress"
                 android:maxLength="30" />
 
-            <ImageButton
-                android:id="@+id/button3"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:onClick="launchContactPicker"
-                android:src="@drawable/ic_action_person" />
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/textView5"
@@ -99,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="10dp"
-            android:text="(Who do you want to send this alert to?)"
+            android:text="@string/to_description"
             android:textSize="10sp" />
 
         <LinearLayout
@@ -110,25 +119,25 @@
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="Location:"
+                android:layout_marginRight="3dp"
+                android:text="@string/location_label"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <EditText
                 android:id="@+id/editText3"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="Location Placeholder.."
+                android:hint="@string/location_hint"
                 android:inputType="textPersonName" />
 
             <Button
                 android:id="@+id/button1"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Maps" />
+                android:layout_height="37dp"
+                android:text="@string/maps_button_label" />
         </LinearLayout>
 
         <TextView
@@ -137,14 +146,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="15dp"
-            android:text="(Where do you want this alert to trigger?)"
+            android:text="@string/location_description"
             android:textSize="10sp" />
 
         <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send email:"
+            android:text="@string/send_email_label"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <RadioGroup
@@ -158,21 +167,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="When I enter the location" />
+                android:text="@string/radio_enter_label" />
 
             <RadioButton
                 android:id="@+id/radio1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:text="When I leave the location" />
+                android:text="@string/radio_exit_label" />
         </RadioGroup>
 
         <TextView
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Text message to send:"
+            android:text="@string/message_email_label"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
@@ -181,7 +190,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:ems="10"
-            android:hint="ex: I just left work, should be home in about 30 minutes."
+            android:hint="@string/message_hint"
             android:inputType="textMultiLine" >
 
             <requestFocus />
@@ -193,8 +202,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="addAlert"
-            android:text="Create New Alert" />
-
+            android:text="@string/button_alert" />
     </LinearLayout>
 
 </ScrollView>

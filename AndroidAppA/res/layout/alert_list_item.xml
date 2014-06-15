@@ -52,7 +52,7 @@
         android:fontFamily="Roboto"
         android:maxLines="3"
         android:text="Message content"
-        android:textColor="@color/dark_gray"
+        android:textColor="@color/medium_gray"
         android:textSize="12sp" />
 
 </LinearLayout>

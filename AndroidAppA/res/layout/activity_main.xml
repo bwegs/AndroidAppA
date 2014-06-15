@@ -5,11 +5,11 @@
     android:orientation="vertical"
     android:padding="3dp" >
 
-
         <TextView
             style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="Roboto"
             android:text="@string/alerts_header"
             android:textAllCaps="false"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -60,6 +60,7 @@
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@id/message"
             android:background="@android:color/background_light"
+            android:contentDescription="@string/new_alert_description"
             android:onClick="addNewAlert"
             android:src="@drawable/ic_action_new" />
 
