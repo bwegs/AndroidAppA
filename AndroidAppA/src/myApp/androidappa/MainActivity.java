@@ -22,6 +22,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import com.bugsense.trace.BugSenseHandler;
 
 public class MainActivity extends ListActivity {
 
@@ -32,6 +33,7 @@ public class MainActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		BugSenseHandler.initAndStartSession(MainActivity.this, "b52296ad");
 		setContentView(R.layout.activity_main);
 		Log.d("Check: ", "Attempting to insert...");
 		db = new DatabaseHandler(this);
