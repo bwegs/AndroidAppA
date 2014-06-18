@@ -10,6 +10,7 @@
 package myApp.androidappa;
 
 import myApp.database.DatabaseHandler;
+import myApp.list.AlertListItem;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,98 +20,170 @@ import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
 public class AddNewEmailAlert extends Activity {
 	private DatabaseHandler db;
-	EditText alertName;
-	EditText emailAdd;
-	// location
-	EditText message;
-	RadioButton enterRadio;
-	RadioButton exitRadio;
+	private EditText alertName;
+	private EditText emailAdd;
+	private EditText location; // location// location
+	private EditText message;
+	private RadioButton enterRadio;
+	private RadioButton exitRadio;
+	private Button createButton;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_new_email_alert);
 		alertName = (EditText) findViewById(R.id.editText1);
 		emailAdd = (EditText) findViewById(R.id.editTextEmail);
+		location = (EditText) findViewById(R.id.editText3);
 		message = (EditText) findViewById(R.id.editText4);
 		enterRadio = (RadioButton) findViewById(R.id.radio0);
 		exitRadio = (RadioButton) findViewById(R.id.radio1);
+		createButton = (Button) findViewById(R.id.button2);
 		db = new DatabaseHandler(this);
+
+		// get data received from calling intent
+		Intent received = getIntent();
+		alertName.setText(received.getStringExtra("TITLE"));
+
+		// if alert name is not empty then activity was opened by an Edit intent
+		if (!checkEmpty(alertName.getText().toString())) {
+			emailAdd.setText(received.getStringExtra("CONTACT"));
+			String loc = "" + received.getIntExtra("LOCATION", 0);
+			location.setText(loc);
+			message.setText(received.getStringExtra("MESSAGE"));
+			if (received.getStringExtra("WHEN").equals("EXIT"))
+				exitRadio.setChecked(true);
+			else
+				enterRadio.setChecked(true);
+			createButton.setText("Update Alert");
+		}
 	}
 
-	// onClick() method
-	public void addAlert(View V) {
+	// onClick() handler
+	public void buttonHandler(View V) {
+		if (createButton.getText().equals("Create New Alert"))
+			addAlert(V);
+		else
+			updateAlert(V);
+	}
 
+	// onClick() method (Create New Alert - Button)
+	public void addAlert(View V) {
+		// if user input is valid then we can add the alert
+		if (isInputValid()) {
+			// get user data and convert to Strings
+			String name = alertName.getText().toString();
+			String email = emailAdd.getText().toString();
+			String text = message.getText().toString();
+			String when;
+			if (exitRadio.isChecked())
+				when = "EXIT";
+			else
+				when = "ENTER";
+
+			// check for duplicate alert name
+			if (db.alertExists(name)) {
+				Toast.makeText(
+						AddNewEmailAlert.this,
+						"An alert with that name already exists! Please enter a new name.",
+						Toast.LENGTH_LONG).show();
+				return;
+			}
+
+			Intent intentMessage = new Intent();
+
+			// Debugging toast
+			Toast.makeText(
+					AddNewEmailAlert.this,
+					"Added new email alert: " + name + " " + email + " " + text,
+					Toast.LENGTH_LONG).show();
+
+			intentMessage.putExtra("TITLE", name);
+			intentMessage.putExtra("CONTACT", email);
+			intentMessage.putExtra("ICON", Constants.EMAIL);
+			intentMessage.putExtra("MESSAGE", text);
+			intentMessage.putExtra("WHEN", when);
+			intentMessage.putExtra("LOCATION", 4);
+
+			setResult(RESULT_OK, intentMessage);
+
+			finish();
+		}
+	}
+
+	// onClick() method to handle alert updates
+	public void updateAlert(View V) {
+		// if user input is valid then we can update the alert
+		if (isInputValid()) {
+			// get user data and convert to Strings
+			String name = alertName.getText().toString();
+			String email = emailAdd.getText().toString();
+			String text = message.getText().toString();
+			String when;
+			if (exitRadio.isChecked())
+				when = "EXIT";
+			else
+				when = "ENTER";
+			AlertListItem updateMe = new AlertListItem(name, email,
+					Constants.LOCATION, text, when, Constants.EMAIL);
+
+			if (db.updateAlert(updateMe) == 1) {
+				Toast.makeText(getApplicationContext(),
+						"'" + name + "' was succesfully updated!",
+						Toast.LENGTH_LONG).show();
+				Intent intentMessage = new Intent();
+				setResult(RESULT_OK, intentMessage);
+
+				finish();
+			} else {
+				Toast.makeText(getApplicationContext(),
+						"Couldn't find an alert named '" + name + "'.",
+						Toast.LENGTH_LONG).show();
+			}
+			db.close();
+		}
+	}
+
+	public boolean isInputValid() {
 		// get user data and convert to Strings
 		String name = alertName.getText().toString();
 		String email = emailAdd.getText().toString();
 		String text = message.getText().toString();
-		String when;
-		if (exitRadio.isChecked())
-			when = "EXIT";
-		else
-			when = "ENTER";
 
-		// Validate user input!
+		// Validate input
 		if (checkEmpty(name)) { // Ensure name field is NOT empty
 			Toast.makeText(AddNewEmailAlert.this, "Give your alert a name!",
 					Toast.LENGTH_LONG).show();
-			return;
+			return false;
 		} else if (checkEmpty(email)) { // Ensure email field is NOT empty
 			Toast.makeText(AddNewEmailAlert.this,
 					"You forgot to enter an email address", Toast.LENGTH_LONG)
 					.show();
-			return;
+			return false;
 			// Do a tiny amount of email validation
 		} else if (!email.contains("@") || !email.contains(".")) {
 			Toast.makeText(AddNewEmailAlert.this,
 					"That email address isn't valid", Toast.LENGTH_LONG).show();
-			return;
+			return false;
 		} else if (checkEmpty(text)) { // Ensure message field is NOT empty
 			Toast.makeText(AddNewEmailAlert.this,
 					"You need to enter a message to send to " + email,
 					Toast.LENGTH_LONG).show();
-			return;
+			return false;
 		}
 
-		// check for duplicate alert name
-		if (db.alertExists(name)) {
-			Toast.makeText(
-					AddNewEmailAlert.this,
-					"An alert with that name already exists! Please enter a new name.",
-					Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		Intent intentMessage = new Intent();
-
-		// Debugging toast
-		Toast.makeText(AddNewEmailAlert.this,
-				"Added new email alert: " + name + " " + email + " " + text,
-				Toast.LENGTH_LONG).show();
-
-		intentMessage.putExtra("TITLE", name);
-		intentMessage.putExtra("CONTACT", email);
-		intentMessage.putExtra("ICON", Constants.EMAIL);
-		intentMessage.putExtra("MESSAGE", text);
-		intentMessage.putExtra("WHEN", when);
-		intentMessage.putExtra("LOCATION", 4);
-
-		setResult(RESULT_OK, intentMessage);
-
-		finish();
+		return true;
 	}
 
 	// Checks if the given string is empty
 	private boolean checkEmpty(String s) {
-		if (s.matches(""))
-			return true;
-		return false;
+		return (s.equals(""));
 	}
 
 	// launches a contact picker to select email address from contacts
@@ -132,7 +205,6 @@ public class AddNewEmailAlert extends Activity {
 				Cursor cursor = null;
 				String email = "";
 				try {
-
 					Uri result = data.getData();
 					Log.v(Constants.DEBUG_TAG, "Got a contact result: "
 							+ result.toString());

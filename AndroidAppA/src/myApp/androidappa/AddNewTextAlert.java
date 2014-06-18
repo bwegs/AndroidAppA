@@ -47,10 +47,12 @@ public class AddNewTextAlert extends Activity {
 		createButton = (Button) findViewById(R.id.button2);
 		db = new DatabaseHandler(this);
 
-		// savedInstanceState.
+		// grab data received from calling intent
 		Intent received = getIntent();
 		alertName.setText(received.getStringExtra("TITLE"));
-		if (!alertName.getText().toString().equals("")) {
+		
+		// if alert name is not empty then activity was opened by an Edit intent
+		if (!checkEmpty(alertName.getText().toString())) {
 			phoneAdd.setText(received.getStringExtra("CONTACT"));
 			String loc = "" + received.getIntExtra("LOCATION", 0);
 			location.setText(loc);
@@ -69,7 +71,6 @@ public class AddNewTextAlert extends Activity {
 			addAlert(V);
 		else
 			updateAlert(V);
-
 	}
 
 	// onClick() method
@@ -186,9 +187,7 @@ public class AddNewTextAlert extends Activity {
 
 	// Checks if the given string is empty
 	private boolean checkEmpty(String s) {
-		if (s.matches(""))
-			return true;
-		return false;
+		return s.equals("");
 	}
 
 	// Checks if the given string consists solely of numbers, '-', '(', ')' or
