@@ -62,6 +62,9 @@ public class AddNewEmailAlert extends Activity {
 			else
 				enterRadio.setChecked(true);
 			createButton.setText("Update Alert");
+			
+			// don't let user modify the name
+			alertName.setEnabled(false);
 		}
 	}
 
