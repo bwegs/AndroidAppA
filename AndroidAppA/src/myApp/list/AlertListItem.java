@@ -24,7 +24,7 @@ public class AlertListItem {
 		this.contact = "contact@email.com";
 		this.message = "Hey mom, I'm leaving school now. See you soon!";
 		this.icon = Constants.EMAIL;
-		this.location = -1;
+		this.location = Constants.LOCATION;
 		this.when = "EXIT";
 	}
 

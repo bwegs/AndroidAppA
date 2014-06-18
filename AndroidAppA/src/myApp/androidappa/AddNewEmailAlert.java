@@ -9,7 +9,6 @@
 
 package myApp.androidappa;
 
-
 import myApp.database.DatabaseHandler;
 import android.app.Activity;
 import android.content.Intent;
@@ -131,50 +130,53 @@ public class AddNewEmailAlert extends Activity {
 				// TODO -- Need to handle multiple email addresses
 				// i.e. let user pick between them
 				Cursor cursor = null;
-	            String email = "";
-	            try {
-	            	
-	                Uri result = data.getData();
-	                Log.v(Constants.DEBUG_TAG, "Got a contact result: "
-	                        + result.toString());
+				String email = "";
+				try {
 
-	                // get the contact id from the Uri
-	                String id = result.getLastPathSegment();
+					Uri result = data.getData();
+					Log.v(Constants.DEBUG_TAG, "Got a contact result: "
+							+ result.toString());
 
-	                // query for everything email
-	                cursor = getContentResolver().query(Email.CONTENT_URI,
-	                        null, Email.CONTACT_ID + "=?", new String[] { id },
-	                        null);
+					// get the contact id from the Uri
+					String id = result.getLastPathSegment();
 
-	                int emailInd = cursor.getColumnIndex(Email.DATA);
+					// query for everything email
+					cursor = getContentResolver().query(Email.CONTENT_URI,
+							null, Email.CONTACT_ID + "=?", new String[] { id },
+							null);
 
-	                // let's just get the first email
-	                if (cursor.moveToFirst()) {
-	                    email = cursor.getString(emailInd);
-	                    Log.v(Constants.DEBUG_TAG, "Got email: " + email);
-	                    while(cursor.moveToNext()) {
-	                    	email = cursor.getString(emailInd);
-	                    	Log.v(Constants.DEBUG_TAG, "Also found email: " + email);
-	                    }
-	                } else {
-	                	//Toast.makeText(AddNewEmailAlert.this, "No email found for contact.", Toast.LENGTH_LONG).show();
-	                    Log.w(Constants.DEBUG_TAG, "No results");
-	                }
-	            } catch (Exception e) {
-	                Log.e(Constants.DEBUG_TAG, "Failed to get email data", e);
-	            } finally {
-	                if (cursor != null) {
-	                    cursor.close();
-	                }
-	                EditText emailEntry = (EditText) findViewById(R.id.editTextEmail);
-	                emailEntry.setText(email);
-	                if (email.length() == 0) {
-	                    Toast.makeText(this, "No email found for contact.",
-	                            Toast.LENGTH_LONG).show();
-	                }
+					int emailInd = cursor.getColumnIndex(Email.DATA);
 
-	            }
-				
+					// let's just get the first email
+					if (cursor.moveToFirst()) {
+						email = cursor.getString(emailInd);
+						Log.v(Constants.DEBUG_TAG, "Got email: " + email);
+
+						// iterate through additional email addresses
+						while (cursor.moveToNext()) {
+							Log.v(Constants.DEBUG_TAG, "Also found email: "
+									+ cursor.getString(emailInd));
+						}
+					} else {
+						// Toast.makeText(AddNewEmailAlert.this,
+						// "No email found for contact.",
+						// Toast.LENGTH_LONG).show();
+						Log.w(Constants.DEBUG_TAG, "No results");
+					}
+				} catch (Exception e) {
+					Log.e(Constants.DEBUG_TAG, "Failed to get email data", e);
+				} finally {
+					if (cursor != null) {
+						cursor.close();
+					}
+					EditText emailEntry = (EditText) findViewById(R.id.editTextEmail);
+					emailEntry.setText(email);
+					if (email.length() == 0) {
+						Toast.makeText(this, "No email found for contact.",
+								Toast.LENGTH_LONG).show();
+					}
+				}
+
 			} else {
 				// gracefully handle failure
 				Log.d(Constants.DEBUG_TAG, "Warning: activity result not ok");

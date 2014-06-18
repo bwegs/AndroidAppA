@@ -35,7 +35,7 @@ public class MainActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		BugSenseHandler.initAndStartSession(MainActivity.this, "b52296ad");
 		setContentView(R.layout.activity_main);
-		Log.d("Check: ", "Attempting to insert...");
+
 		db = new DatabaseHandler(this);
 
 		// create an ArrayList of AlertListItems
@@ -61,8 +61,7 @@ public class MainActivity extends ListActivity {
 
 		switch (item.getItemId()) {
 		case R.id.delete:
-			AlertListItem deleteMe = (AlertListItem) mAdapter
-					.getItem((int) info.id);
+			AlertListItem deleteMe = (AlertListItem) mAdapter.getItem((int)info.id);
 
 			// ********** TODO Confirmation or Undo feature
 			db.deleteAlert(deleteMe); // remove alert from database (don't have
@@ -76,11 +75,33 @@ public class MainActivity extends ListActivity {
 					.show();
 			return true;
 		case R.id.edit:
-			// Intent emailIntent = new
-			// Intent(android.content.Intent.ACTION_SEND);
+			// TODO - open appropriate activity and fill with data
+			AlertListItem editMe = (AlertListItem) mAdapter.getItem((int)info.id);
+			
+			Intent editIntent;
+			switch(editMe.getIcon()) {
+			// if the item to be edited is an Email alert...
+			case(Constants.EMAIL):
+				editIntent = new Intent(this, AddNewEmailAlert.class);
+				break;
+			// if the item to be edited is a Text alert...
+			case(Constants.TEXT):
+				editIntent = new Intent(this, AddNewTextAlert.class);
+				break;
+			default:
+				Toast.makeText(getApplicationContext(),"Item could not be edited at this time",
+						Toast.LENGTH_SHORT).show();
+				return false;
+			}
+			
+			editIntent.putExtra("TITLE", editMe.getTitle());
+			editIntent.putExtra("CONTACT", editMe.getContact());
+			editIntent.putExtra("LOCATION", editMe.getLocation());
+			editIntent.putExtra("MESSAGE", editMe.getMessage());
+			editIntent.putExtra("WHEN", editMe.getWhen());
 
-			// startActivity(emailIntent);
-			return true;
+			startActivityForResult(editIntent, Constants.UPDATE);
+			
 		default:
 			return super.onContextItemSelected(item);
 		}
@@ -139,7 +160,7 @@ public class MainActivity extends ListActivity {
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-
+		
 		if (resultCode == RESULT_OK) {
 			// 
 			if (requestCode == Constants.EMAIL || requestCode == Constants.TEXT) {
@@ -157,13 +178,18 @@ public class MainActivity extends ListActivity {
 				db.addAlert(addMe);	 // add the alert to our database
 				mAdapter.add(addMe); // add the alert to the list adapter
 				mAdapter.notifyDataSetChanged(); // notify the list adapter
-			} 
+			} else if(requestCode == Constants.UPDATE) {
+				// restart activity so the updated alert appears
+				finish();
+				startActivity(getIntent());
+			}
 			
 		// result was not OK	
 		} else {
 			
 			Log.w("Warning", "Warning: activity result not ok");
 		}
+		
 	}
 
 	public void launchSettings() {
