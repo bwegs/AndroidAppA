@@ -29,7 +29,7 @@ public class AddNewEmailAlert extends Activity {
 	private DatabaseHandler db;
 	private EditText alertName;
 	private EditText emailAdd;
-	private EditText location; // location// location
+	private EditText location; // location
 	private EditText message;
 	private RadioButton enterRadio;
 	private RadioButton exitRadio;

@@ -8,7 +8,10 @@ public final class Constants {
 	
 	public static final int LOCATION = -1;
 	
-	
+
+	// Transition Constants
+	public static final int ENTER = 1;
+	public static final int EXIT = 2;
 	
 	public static final String DEBUG_TAG = "Debug";
 }
