@@ -1,12 +1,9 @@
-package myApp.androidappa;
+package myApp.location;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.Bundle;
+import java.io.IOException;
+import java.util.List;
+
+import myApp.androidappa.R;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -15,14 +12,27 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-public class EditLocationsActivity extends Activity {
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
+public class AddLocationActivity extends Activity {
 	GoogleMap googleMap;
 	Location lastKnownLocation;
+	private EditText address;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.edit_locations);
+		setContentView(R.layout.add_locations);
 
 		// Getting Google Play availability status
 		int status = GooglePlayServicesUtil
@@ -82,6 +92,38 @@ public class EditLocationsActivity extends Activity {
 					.animateCamera(CameraUpdateFactory.newLatLngZoom(
 							new LatLng(location.getLatitude(), location
 									.getLongitude()), 15));
+		}
+	}
+
+	public void go(View v) {
+		address = (EditText) findViewById(R.id.editText2);
+
+		String check = address.getText().toString();
+		if (!check.equals("")) {
+			List<Address> myList;
+			Geocoder gc = new Geocoder(getApplicationContext());
+			try {
+				myList = gc
+						.getFromLocationName(address.getText().toString(), 1);
+				if (myList.size() > 0) {
+					Address a = myList.get(0);
+					double lat = a.getLatitude();
+					double lng = a.getLongitude();
+					googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+							new LatLng(lat, lng), 15));
+				} else {
+					Toast.makeText(this, "Sorry, couldn't find that location",
+							Toast.LENGTH_LONG).show();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				Toast.makeText(this, "Sorry, couldn't find that location",
+						Toast.LENGTH_LONG).show();
+				e.printStackTrace();
+			}
+		} else {
+			Toast.makeText(this, "You didn't enter a location!",
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 

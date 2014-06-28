@@ -7,6 +7,11 @@
     <string name="action_locations">Edit Locations</string>
     <string name="new_alert">New Alert</string>
     <string name="new_alert_description">Add new alert button</string>
+
+    <string name="alerts_header">My Alerts</string>
+    <string name="add_alert_button">Add New Alert</string>
+    <string name="radio0">Text</string>
+    <string name="radio1">Email</string>
     
     <!--  add_new_***_alert strings -->
     <string name="new_text_alert">New Text Alert</string>
@@ -41,11 +46,17 @@
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     
-    <string name="alerts_header">My Alerts</string>
-    <string name="add_alert_button">Add New Alert</string>
-    <string name="radio0">Text</string>
-    <string name="radio1">Email</string>
+    <!-- edit location strings -->
+    <string name="locations_header">My Locations</string>
+    <string name="add_location_button">Add New Location</string>
+    <string name="new_location_description">Add new location button</string>
     
+    <!-- add new location strings -->
+    <string name="go_button">Go</string>
+    <string name="this_location_button">Add This Location</string>
+    <string name="geocode_hint">123 Main Street Baltimore, MD</string>
+    <string name="location_name_hint">Work</string>
+    <string name="location_name_description">(Give this location a meaningful name)</string>
     
     <!-- Geofence Messages -->
     <string name="add_geofences_result_success">
