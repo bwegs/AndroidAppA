@@ -5,19 +5,17 @@ import java.util.ArrayList;
 import myApp.database.DatabaseHandler;
 import myApp.list.AlertListAdapter;
 import myApp.list.AlertListItem;
+import myApp.location.EditLocationActivity;
 
-import android.support.v4.app.Fragment;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -64,8 +62,7 @@ public class MainActivity extends ListActivity {
 			AlertListItem deleteMe = (AlertListItem) mAdapter.getItem((int)info.id);
 
 			// ********** TODO Confirmation or Undo feature
-			db.deleteAlert(deleteMe); // remove alert from database (don't have
-										// to do this)
+			db.deleteAlert(deleteMe); // remove alert from database (don't have to do this)
 			mAdapter.delete(deleteMe); // remove from adapter
 
 			mAdapter.notifyDataSetChanged();
@@ -200,7 +197,7 @@ public class MainActivity extends ListActivity {
 
 	public void launchLocations() {
 		Intent intentEditLocations = new Intent(this,
-				EditLocationsActivity.class);
+				EditLocationActivity.class);
 		startActivity(intentEditLocations);
 	}
 	

@@ -83,6 +83,13 @@ public class AlertListItem {
 		return this.when;
 	}
 	
+	public int getWhenInt() {
+		if(this.when.equals("ENTER"))
+			return Constants.ENTER;
+		else
+			return Constants.EXIT;
+	}
+	
 	public String getMessage() {
 		return message;
 	}
