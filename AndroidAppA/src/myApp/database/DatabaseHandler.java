@@ -61,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Create 'locations' table string
 	private static final String CREATE_LOCATIONS_TABLE = "CREATE TABLE "
-			+ TABLE_LOCATIONS + "(" + KEY_LOCATION_ID + " INTEGER PRIMARY KEY,"
+			+ TABLE_LOCATIONS + "(" + KEY_LOCATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 			+ KEY_NAME + " TEXT," + KEY_LAT + " REAL," + KEY_LONG + " REAL,"
 			+ KEY_RAD + " REAL," + KEY_EXPIRE + " INTEGER," + KEY_TRANSITION
 			+ " INTEGER" + ")";
@@ -220,9 +220,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		ContentValues values = new ContentValues();
 
-		values.put(KEY_LOCATION_ID, location.getId()); // location_id
-		values.put(KEY_NAME, location.getName()); // location name (not stored
-													// in Shared Prefs)
+		//values.put(KEY_LOCATION_ID, location.getId()); // location_id -- automatically generated
+		values.put(KEY_NAME, location.getName()); // location name
 		values.put(KEY_LAT, location.getLatitude()); // latitude
 		values.put(KEY_LONG, location.getLongitude()); // longitude
 		values.put(KEY_RAD, location.getRadius()); // radius
@@ -263,7 +262,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			} while (cursor.moveToNext());
 		}
 
-		// return alert list
+		// return location list
 		return locationList;
 	}
 
@@ -288,7 +287,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	/**
 	 * Deleting single location
 	 * 
-	 * TODO -- needs to be removed from Shared Prefs first
+	 * TODO --any geofences using this location need to be removed first
 	 * */
 	public void deleteLocation(Location location) {
 		SQLiteDatabase db = this.getWritableDatabase();
