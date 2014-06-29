@@ -9,7 +9,33 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <fragment
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <EditText
+                android:id="@+id/editText2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/button1"
+                android:ems="10"
+                android:hint="@string/geocode_hint" >
+
+                <requestFocus />
+            </EditText>
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/editText2"
+                android:onClick="go"
+                android:text="@string/go_button" />
+
+        </RelativeLayout>
+
+        <fragment 
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="fill_parent"
@@ -18,6 +44,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
+
+            <ImageButton
+                android:id="@+id/imageButton1"
+                android:layout_width="36dp"
+                android:layout_height="32dp"
+                android:onClick="shrink"
+                android:src="@android:drawable/btn_star" />
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="37dp"
+                android:layout_height="32dp"
+                android:onClick="grow"
+                android:src="@drawable/ic_action_new" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -48,34 +88,13 @@
             android:text="@string/location_name_description"
             android:textSize="10sp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <EditText
-                android:id="@+id/editText2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/geocode_hint" />
-
-            <Button
-                android:id="@+id/button1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/editText2"
-                android:onClick="go"
-                android:text="@string/go_button" />
-
-        </RelativeLayout>
-
         <Button
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
+            android:onClick="addLocation"
             android:text="@string/this_location_button" />
 
     </LinearLayout>

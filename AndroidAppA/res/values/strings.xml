@@ -52,9 +52,9 @@
     <string name="new_location_description">Add new location button</string>
     
     <!-- add new location strings -->
-    <string name="go_button">Go</string>
+    <string name="go_button">Find</string>
     <string name="this_location_button">Add This Location</string>
-    <string name="geocode_hint">123 Main Street Baltimore, MD</string>
+    <string name="geocode_hint">Find location</string>
     <string name="location_name_hint">Work</string>
     <string name="location_name_description">(Give this location a meaningful name)</string>
     

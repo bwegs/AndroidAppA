@@ -4,17 +4,24 @@ import java.io.IOException;
 import java.util.List;
 
 import myApp.androidappa.R;
+import myApp.database.DatabaseHandler;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -26,13 +33,22 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class AddLocationActivity extends Activity {
-	GoogleMap googleMap;
-	Location lastKnownLocation;
+	private GoogleMap googleMap;
 	private EditText address;
+	private Circle circle;
+	private Marker marker;
+	private double latitude;
+	private double longitude;
+	private float radius = 400;
+
+	private DatabaseHandler db;
+	private EditText locationName;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_locations);
+
+		locationName = (EditText) findViewById(R.id.editText1);
 
 		// Getting Google Play availability status
 		int status = GooglePlayServicesUtil
@@ -57,7 +73,7 @@ public class AddLocationActivity extends Activity {
 			googleMap = fm.getMap();
 
 			// Enabling MyLocation Layer of Google Map
-			googleMap.setMyLocationEnabled(true);
+			// googleMap.setMyLocationEnabled(true);
 
 			// Getting LocationManager object from System Service
 			// LOCATION_SERVICE
@@ -79,6 +95,8 @@ public class AddLocationActivity extends Activity {
 		}
 	}
 
+	// TODO -- allow user to change circle radius -- between 200 & ???m
+
 	private void centerMapOnMyLocation() {
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		Criteria criteria = new Criteria();
@@ -91,7 +109,20 @@ public class AddLocationActivity extends Activity {
 			googleMap
 					.animateCamera(CameraUpdateFactory.newLatLngZoom(
 							new LatLng(location.getLatitude(), location
-									.getLongitude()), 15));
+									.getLongitude()), 14));
+
+			latitude = location.getLatitude();
+			longitude = location.getLongitude();
+			// add a circle around current location
+			circle = googleMap.addCircle(new CircleOptions()
+					.center(new LatLng(latitude, longitude)).radius(radius)
+					.strokeColor(Color.RED).fillColor(Color.TRANSPARENT));
+
+			// add a marker at current / last known loc
+			marker = googleMap.addMarker(new MarkerOptions().position(
+					new LatLng(latitude, longitude)).title(
+					"Last Known Location"));
+			marker.showInfoWindow();
 		}
 	}
 
@@ -101,22 +132,35 @@ public class AddLocationActivity extends Activity {
 		String check = address.getText().toString();
 		if (!check.equals("")) {
 			List<Address> myList;
-			Geocoder gc = new Geocoder(getApplicationContext());
+			Geocoder gc = new Geocoder(getBaseContext());
 			try {
 				myList = gc
 						.getFromLocationName(address.getText().toString(), 1);
 				if (myList.size() > 0) {
 					Address a = myList.get(0);
-					double lat = a.getLatitude();
-					double lng = a.getLongitude();
+					latitude = a.getLatitude();
+					longitude = a.getLongitude();
 					googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-							new LatLng(lat, lng), 15));
+							new LatLng(latitude, longitude), 14));
+					// if a circle exists remove it and add a new one
+					if (circle != null && circle.isVisible()) {
+						circle.remove();
+						circle = googleMap.addCircle(new CircleOptions()
+								.center(new LatLng(latitude, longitude))
+								.radius(radius).strokeColor(Color.RED)
+								.fillColor(Color.TRANSPARENT));
+					}
+					// if a marker exists remove it and add a new one
+					if (marker != null && marker.isVisible()) {
+						marker.remove();
+						marker = googleMap.addMarker(new MarkerOptions()
+								.position(new LatLng(latitude, longitude)));
+					}
 				} else {
 					Toast.makeText(this, "Sorry, couldn't find that location",
 							Toast.LENGTH_LONG).show();
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				Toast.makeText(this, "Sorry, couldn't find that location",
 						Toast.LENGTH_LONG).show();
 				e.printStackTrace();
@@ -125,6 +169,92 @@ public class AddLocationActivity extends Activity {
 			Toast.makeText(this, "You didn't enter a location!",
 					Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	// decrease radius of circle
+	public void shrink(View v) {
+		if (radius > 100)
+			radius -= 50;
+
+		// redraw circle
+		// if a circle exists remove it and add a new one
+		if (circle != null && circle.isVisible()) {
+			circle.remove();
+			circle = googleMap.addCircle(new CircleOptions()
+					.center(new LatLng(latitude, longitude)).radius(radius)
+					.strokeColor(Color.RED).fillColor(Color.TRANSPARENT));
+		}
+	}
+
+	// increase radius of circle
+	public void grow(View v) {
+		if (radius < 1500)
+			radius += 50;
+
+		// redraw circle
+		// if a circle exists remove it and add a new one
+		if (circle != null && circle.isVisible()) {
+			circle.remove();
+			circle = googleMap.addCircle(new CircleOptions()
+					.center(new LatLng(latitude, longitude)).radius(radius)
+					.strokeColor(Color.RED).fillColor(Color.TRANSPARENT));
+		}
+	}
+
+	public void addLocation(View v) {
+		// if user input is valid then we can add the alert
+		if (isInputValid()) {
+			// get location name
+			String name = locationName.getText().toString();
+
+			// check for duplicate location name
+//			if (db.locationExists(name)) {
+//				Toast.makeText(
+//						this,
+//						"A location with that name already exists! Please enter a new name.",
+//						Toast.LENGTH_LONG).show();
+//				return;
+//			}
+
+			// Debugging toast
+			Toast.makeText(
+					this,
+					"Added new location: " + name + " latitude = " + latitude
+							+ " longitude = " + longitude + " radius = "
+							+ radius, Toast.LENGTH_LONG).show();
+
+			Intent intentMessage = new Intent();
+
+			intentMessage.putExtra("NAME", name);
+			intentMessage.putExtra("LONGITUDE", longitude);
+			intentMessage.putExtra("LATITUDE", latitude);
+			intentMessage.putExtra("RADIUS", radius);
+
+			setResult(RESULT_OK, intentMessage);
+
+			finish();
+		}
+	}
+
+	public boolean isInputValid() {
+		String name = locationName.getText().toString();
+
+		if (name.equals("")) {
+			Toast.makeText(this,
+					"Please enter a name for this location.",
+					Toast.LENGTH_LONG).show();
+			return false;
+		} else if (radius < 100 || radius > 1500) {
+			Toast.makeText(this, "Invalid radius = " + radius,
+					Toast.LENGTH_LONG).show();
+			return false;
+		} else if (longitude < -180 || longitude > 180 || latitude < -90  || latitude > 90) {
+			Toast.makeText(this,
+					"Invalid long " + longitude + " or lat " + latitude,
+					Toast.LENGTH_LONG).show();
+			return false;
+		}
+		return true;
 	}
 
 }
