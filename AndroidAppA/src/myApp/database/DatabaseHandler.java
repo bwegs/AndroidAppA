@@ -231,6 +231,49 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.insert(TABLE_LOCATIONS, null, values);
 		db.close(); // Closing database connection
 	}
+	
+	/**
+	 * Getting single location by location_id
+	 * */
+	public LocationListItem getLocation(int id) {
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.query(TABLE_LOCATIONS, null,
+				KEY_LOCATION_ID + "=?", new String[] { "" + id }, null, null,
+				null, null);
+		if (cursor != null)
+			cursor.moveToFirst();
+
+		LocationListItem location = new LocationListItem(Integer.parseInt(cursor.getString(0)),
+				cursor.getString(1), Double.parseDouble(cursor.getString(2)),
+				Double.parseDouble(cursor.getString(3)), 
+				Float.parseFloat(cursor.getString(4)),
+				cursor.getString(5));
+		// return location
+		return location;
+	}
+	
+	/**
+	 * Getting single location by name
+	 * */
+	public LocationListItem getLocation(String name) {
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.query(TABLE_LOCATIONS, null,
+				KEY_NAME + "=?", new String[] { name }, null, null,
+				null, null);
+		if (cursor != null)
+			cursor.moveToFirst();
+
+		LocationListItem location = new LocationListItem(Integer.parseInt(cursor.getString(0)),
+				cursor.getString(1), Double.parseDouble(cursor.getString(2)),
+				Double.parseDouble(cursor.getString(3)), 
+				Float.parseFloat(cursor.getString(4)),
+				cursor.getString(5));
+		// return location
+		return location;
+	}
+	
 
 	/**
 	 * Getting all locations
@@ -308,6 +351,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery("select 1 from " + TABLE_LOCATIONS
 				+ " where name=?", new String[] { name });
+		boolean exists = (cursor.getCount() > 0);
+		cursor.close();
+		db.close();
+		return exists;
+	}
+	
+	/**
+	 * Check if location exists (by id)
+	 * */
+	public boolean locationExists(int id) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery("select 1 from " + TABLE_LOCATIONS
+				+ " where location_id=?", new String[] { "" + id });
 		boolean exists = (cursor.getCount() > 0);
 		cursor.close();
 		db.close();

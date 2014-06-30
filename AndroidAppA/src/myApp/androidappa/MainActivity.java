@@ -173,9 +173,12 @@ public class MainActivity extends ListActivity {
 				String title = data.getStringExtra("TITLE");
 				String contact = data.getStringExtra("CONTACT");
 				int icon = data.getIntExtra("ICON", 0);
-				int location = data.getIntExtra("LOCATION", -1);
+				String loc = data.getStringExtra("LOCATION");
 				String message = data.getStringExtra("MESSAGE");
 				String when = data.getStringExtra("WHEN");
+				
+				// get location id from 'locations' table
+				int location = db.getLocation(loc).getLocationId();
 
 				// needs a title, icon, contact, message to preview
 				AlertListItem addMe = new AlertListItem(title, contact,

@@ -54,8 +54,13 @@ public class AddNewEmailAlert extends Activity {
 		// if alert name is not empty then activity was opened by an Edit intent
 		if (!checkEmpty(alertName.getText().toString())) {
 			emailAdd.setText(received.getStringExtra("CONTACT"));
-			String loc = "" + received.getIntExtra("LOCATION", 0);
-			location.setText(loc);
+
+			int locId = received.getIntExtra("LOCATION", 0);
+			if(db.locationExists(locId))
+				location.setText(db.getLocation(locId).getName());
+			else
+				location.setText("Location not found");
+			
 			message.setText(received.getStringExtra("MESSAGE"));
 			if (received.getStringExtra("WHEN").equals("EXIT"))
 				exitRadio.setChecked(true);
@@ -83,6 +88,7 @@ public class AddNewEmailAlert extends Activity {
 			// get user data and convert to Strings
 			String name = alertName.getText().toString();
 			String email = emailAdd.getText().toString();
+			String loc = location.getText().toString();
 			String text = message.getText().toString();
 			String when;
 			if (exitRadio.isChecked())
@@ -112,7 +118,7 @@ public class AddNewEmailAlert extends Activity {
 			intentMessage.putExtra("ICON", Constants.EMAIL);
 			intentMessage.putExtra("MESSAGE", text);
 			intentMessage.putExtra("WHEN", when);
-			intentMessage.putExtra("LOCATION", 4);
+			intentMessage.putExtra("LOCATION", loc);
 
 			setResult(RESULT_OK, intentMessage);
 
@@ -128,13 +134,19 @@ public class AddNewEmailAlert extends Activity {
 			String name = alertName.getText().toString();
 			String email = emailAdd.getText().toString();
 			String text = message.getText().toString();
+			String loc = location.getText().toString();
 			String when;
 			if (exitRadio.isChecked())
 				when = "EXIT";
 			else
 				when = "ENTER";
+			
+			int locId = -1;
+			if(db.locationExists(loc))
+				locId = db.getLocation(loc).getLocationId();
+			
 			AlertListItem updateMe = new AlertListItem(name, email,
-					Constants.LOCATION, text, when, Constants.EMAIL);
+					locId, text, when, Constants.EMAIL);
 
 			if (db.updateAlert(updateMe) == 1) {
 				Toast.makeText(getApplicationContext(),
@@ -158,7 +170,16 @@ public class AddNewEmailAlert extends Activity {
 		String name = alertName.getText().toString();
 		String email = emailAdd.getText().toString();
 		String text = message.getText().toString();
+		String loc = location.getText().toString();
 
+		// if a location by that name doesn't exist -- then return false
+		if(db.locationExists(loc) == false) {
+			Toast.makeText(AddNewEmailAlert.this, "Couldn't find a location by that name." +
+					" Make sure you've added it to your locations list first.",
+					Toast.LENGTH_LONG).show();
+			return false;
+		}
+		
 		// Validate input
 		if (checkEmpty(name)) { // Ensure name field is NOT empty
 			Toast.makeText(AddNewEmailAlert.this, "Give your alert a name!",

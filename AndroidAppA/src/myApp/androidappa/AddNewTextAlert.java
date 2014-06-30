@@ -50,19 +50,23 @@ public class AddNewTextAlert extends Activity {
 		// grab data received from calling intent
 		Intent received = getIntent();
 		alertName.setText(received.getStringExtra("TITLE"));
-		
+
 		// if alert name is not empty then activity was opened by an Edit intent
 		if (!checkEmpty(alertName.getText().toString())) {
 			phoneAdd.setText(received.getStringExtra("CONTACT"));
-			String loc = "" + received.getIntExtra("LOCATION", 0);
-			location.setText(loc);
+			int locId = received.getIntExtra("LOCATION", 0);
+			
+			if(db.locationExists(locId))
+				location.setText(db.getLocation(locId).getName());
+			else
+				location.setText("Location not found");
 			message.setText(received.getStringExtra("MESSAGE"));
 			if (received.getStringExtra("WHEN").equals("EXIT"))
 				exitRadio.setChecked(true);
 			else
 				enterRadio.setChecked(true);
 			createButton.setText("Update Alert");
-			
+
 			// don't let user modify the name
 			alertName.setEnabled(false);
 		}
@@ -84,6 +88,7 @@ public class AddNewTextAlert extends Activity {
 			// get user data and convert to Strings
 			String name = alertName.getText().toString();
 			String phone = phoneAdd.getText().toString();
+			String loc = location.getText().toString();
 			String text = message.getText().toString();
 			String when;
 			if (exitRadio.isChecked())
@@ -100,9 +105,6 @@ public class AddNewTextAlert extends Activity {
 				return;
 			}
 
-			// TODO -- CHECK IF LOCATION EXISTS IN LOCATION TABLE!
-			// location must be created before it can be used
-
 			Intent intentMessage = new Intent();
 
 			// Debugging toast
@@ -116,7 +118,7 @@ public class AddNewTextAlert extends Activity {
 			intentMessage.putExtra("ICON", Constants.TEXT);
 			intentMessage.putExtra("MESSAGE", text);
 			intentMessage.putExtra("WHEN", when);
-			intentMessage.putExtra("LOCATION", 3);
+			intentMessage.putExtra("LOCATION", loc);
 
 			setResult(RESULT_OK, intentMessage);
 
@@ -132,25 +134,32 @@ public class AddNewTextAlert extends Activity {
 			String name = alertName.getText().toString();
 			String phone = phoneAdd.getText().toString();
 			String text = message.getText().toString();
+			String loc = location.getText().toString();
 			String when;
 			if (exitRadio.isChecked())
 				when = "EXIT";
 			else
 				when = "ENTER";
-			AlertListItem updateMe = new AlertListItem(name, phone, Constants.LOCATION, text, when, Constants.TEXT);
+			
+			int locId = -1;
+			if(db.locationExists(loc))
+				locId = db.getLocation(loc).getLocationId();
+			
+			AlertListItem updateMe = new AlertListItem(name, phone,
+					locId, text, when, Constants.TEXT);
 
 			if (db.updateAlert(updateMe) == 1) {
 				Toast.makeText(getApplicationContext(),
-						"'" + name + "' was succesfully updated!", Toast.LENGTH_LONG)
-						.show();
+						"'" + name + "' was succesfully updated!",
+						Toast.LENGTH_LONG).show();
 				Intent intentMessage = new Intent();
 				setResult(RESULT_OK, intentMessage);
 
 				finish();
 			} else {
 				Toast.makeText(getApplicationContext(),
-						"Couldn't find an alert named '" + name + "'.", Toast.LENGTH_LONG)
-						.show();
+						"Couldn't find an alert named '" + name + "'.",
+						Toast.LENGTH_LONG).show();
 			}
 			db.close();
 		}
@@ -161,6 +170,17 @@ public class AddNewTextAlert extends Activity {
 		String name = alertName.getText().toString();
 		String phone = phoneAdd.getText().toString();
 		String text = message.getText().toString();
+		String loc = location.getText().toString();
+
+		// if a location by that name doesn't exist -- then return false
+		if (db.locationExists(loc) == false) {
+			Toast.makeText(
+					AddNewTextAlert.this,
+					"Couldn't find a location by that name."
+							+ " Make sure you've added it to your locations list first.",
+					Toast.LENGTH_LONG).show();
+			return false;
+		}
 
 		// Validate input
 		if (checkEmpty(name)) { // Ensure name is NOT empty
