@@ -7,11 +7,11 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="fill_parent"
         android:layout_marginRight="5dp"
         android:contentDescription="place_icon"
-        android:src="@drawable/ic_action_place" />
+        android:src="@drawable/ic_action_place_dark" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -24,8 +24,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:maxEms="7"
-            android:minEms="7"
+            android:maxEms="6"
+            android:minEms="6"
             android:text="Example Location"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -36,8 +36,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:maxEms="7"
-            android:minEms="7"
+            android:maxEms="6"
+            android:minEms="6"
             android:text="Radius"
             android:textSize="12sp" />
 
@@ -50,9 +50,9 @@
         android:layout_marginLeft="1dp"
         android:ellipsize="end"
         android:fontFamily="Roboto"
-        android:maxLines="3"
+        android:maxLines="4"
         android:text="Address"
         android:textColor="@color/medium_gray"
-        android:textSize="12sp" />
+        android:textSize="14sp" />
 
 </LinearLayout>

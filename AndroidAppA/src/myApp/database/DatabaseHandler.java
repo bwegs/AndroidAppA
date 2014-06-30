@@ -12,7 +12,7 @@ package myApp.database;
 import java.util.ArrayList;
 
 import myApp.list.AlertListItem;
-import myApp.location.Location;
+import myApp.list.LocationListItem;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -23,7 +23,7 @@ import android.util.Log;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 3;
 
 	// Database name
 	private static final String DATABASE_NAME = "alertsManager.db";
@@ -47,8 +47,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String KEY_LAT = "latitude";
 	private static final String KEY_LONG = "longitude";
 	private static final String KEY_RAD = "radius";
-	private static final String KEY_EXPIRE = "expiration";
-	private static final String KEY_TRANSITION = "transition";
+	private static final String KEY_ADDRESS = "address";
 
 	// Create 'alerts' table string
 	private static final String CREATE_ALERTS_TABLE = "CREATE TABLE "
@@ -56,15 +55,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			+ "("
 			// + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 			+ KEY_NAME + " TEXT PRIMARY KEY," + KEY_CONTACT + " TEXT,"
-			+ KEY_LOCATION_ID + " INTEGER FOREIGN KEY," + KEY_MESSAGE
-			+ " TEXT," + KEY_TRIGGER + " TEXT," + KEY_TYPE + " INTEGER" + ")";
+			+ KEY_LOCATION_ID + " INTEGER," + KEY_MESSAGE
+			+ " TEXT," + KEY_TRIGGER + " TEXT," + KEY_TYPE + " INTEGER,"
+			+ " FOREIGN KEY(" + KEY_LOCATION_ID + ") REFERENCES " + TABLE_LOCATIONS
+			+ "(" + KEY_LOCATION_ID + "))";
 
 	// Create 'locations' table string
 	private static final String CREATE_LOCATIONS_TABLE = "CREATE TABLE "
 			+ TABLE_LOCATIONS + "(" + KEY_LOCATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 			+ KEY_NAME + " TEXT," + KEY_LAT + " REAL," + KEY_LONG + " REAL,"
-			+ KEY_RAD + " REAL," + KEY_EXPIRE + " INTEGER," + KEY_TRANSITION
-			+ " INTEGER" + ")";
+			+ KEY_RAD + " REAL," + KEY_ADDRESS + " TEXT" + ")";
 
 	public DatabaseHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -73,8 +73,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// create tables
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		db.execSQL(CREATE_LOCATIONS_TABLE); 
 		db.execSQL(CREATE_ALERTS_TABLE);
-		db.execSQL(CREATE_LOCATIONS_TABLE);
 	}
 
 	@Override
@@ -215,7 +215,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	/**
 	 * Adding a new location
 	 * */
-	public void addLocation(Location location) {
+	public void addLocation(LocationListItem location) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
@@ -225,6 +225,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_LAT, location.getLatitude()); // latitude
 		values.put(KEY_LONG, location.getLongitude()); // longitude
 		values.put(KEY_RAD, location.getRadius()); // radius
+		values.put(KEY_ADDRESS, location.getAddress()); // address
 
 		// Inserting Row
 		db.insert(TABLE_LOCATIONS, null, values);
@@ -234,8 +235,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	/**
 	 * Getting all locations
 	 * */
-	public ArrayList<Location> getAllLocations() {
-		ArrayList<Location> locationList = new ArrayList<Location>();
+	public ArrayList<LocationListItem> getAllLocations() {
+		ArrayList<LocationListItem> locationList = new ArrayList<LocationListItem>();
 		// Select All Query
 		String selectQuery = "SELECT  * FROM " + TABLE_LOCATIONS;
 
@@ -246,11 +247,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		if (cursor.moveToFirst()) {
 			do {
 				try {
-					Location location = new Location(cursor.getString(0), // location id
+					LocationListItem location = new LocationListItem(
+							Integer.parseInt(cursor.getString(0)), // location id
 							cursor.getString(1), // name
 							Double.parseDouble(cursor.getString(2)), // latitude
 							Double.parseDouble(cursor.getString(3)), // longitude
-							Float.parseFloat(cursor.getString(4))); // radius
+							Float.parseFloat(cursor.getString(4)),	// radius
+							cursor.getString(5)); // address
+							
 
 					// Adding location to list
 					locationList.add(location);
@@ -269,19 +273,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	/**
 	 * Updating a single location
 	 * */
-	public int updateLocation(Location location) {
+	public int updateLocation(LocationListItem location) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
-		values.put(KEY_LOCATION_ID, location.getId());
+		values.put(KEY_LOCATION_ID, location.getLocationId());
 		values.put(KEY_NAME, location.getName());
 		values.put(KEY_LAT, location.getLatitude());
 		values.put(KEY_LONG, location.getLongitude());
 		values.put(KEY_RAD, location.getRadius());
+		values.put(KEY_ADDRESS, location.getAddress()); // address
 
 		// updating row
 		return db.update(TABLE_LOCATIONS, values, KEY_LOCATION_ID + " = ?",
-				new String[] { location.getId() });
+				new String[] {"" + location.getLocationId() });
 	}
 
 	/**
@@ -289,11 +294,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 * 
 	 * TODO --any geofences using this location need to be removed first
 	 * */
-	public void deleteLocation(Location location) {
+	public void deleteLocation(LocationListItem location) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_LOCATIONS, KEY_LOCATION_ID + " = ?",
-				new String[] { location.getId() });
+				new String[] {"" + location.getLocationId() });
 		db.close();
+	}
+	
+	/**
+	 * Check if location exists
+	 * */
+	public boolean locationExists(String name) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery("select 1 from " + TABLE_LOCATIONS
+				+ " where name=?", new String[] { name });
+		boolean exists = (cursor.getCount() > 0);
+		cursor.close();
+		db.close();
+		return exists;
 	}
 
 }

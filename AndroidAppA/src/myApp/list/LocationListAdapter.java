@@ -54,14 +54,15 @@ public class LocationListAdapter extends BaseAdapter {
         }
          
         //ImageView imgIcon = (ImageView)convertView.findViewById(R.id.icon);
-        TextView txtName = (TextView)convertView.findViewById(R.id.title);
-        TextView txtAddress = (TextView)convertView.findViewById(R.id.contact);
-        TextView txtRadius = (TextView)convertView.findViewById(R.id.message);
+        TextView txtName = (TextView)convertView.findViewById(R.id.name);
+        TextView txtAddress = (TextView)convertView.findViewById(R.id.address);
+        TextView txtRadius = (TextView)convertView.findViewById(R.id.radius);
          
+        
         //imgIcon.setImageResource(locationItems.get(position).getIconID());     
         txtName.setText(locationItems.get(position).getName());
         txtAddress.setText(locationItems.get(position).getAddress());
-        txtRadius.setText(Float.toString(locationItems.get(position).getRadius()));
+        txtRadius.setText("Radius = " + Float.toString(locationItems.get(position).getRadius()) + "m");
         
         
         return convertView;

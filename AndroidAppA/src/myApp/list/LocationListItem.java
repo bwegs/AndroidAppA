@@ -11,8 +11,17 @@ public class LocationListItem {
 
 	// Constructor
 	public LocationListItem(int id, String name, double latitude,
-			double longitude, float radius) {
+			double longitude, float radius, String address) {
 		locationId = id;
+		this.name = name;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.radius = radius;
+		this.address = address;
+	}
+	
+	public LocationListItem(String name, double latitude,
+			double longitude, float radius) {
 		this.name = name;
 		this.latitude = latitude;
 		this.longitude = longitude;

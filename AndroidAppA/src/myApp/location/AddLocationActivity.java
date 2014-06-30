@@ -28,6 +28,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -48,6 +49,9 @@ public class AddLocationActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_locations);
 
+		// get db handler
+		db = new DatabaseHandler(this);
+		
 		locationName = (EditText) findViewById(R.id.editText1);
 
 		// Getting Google Play availability status
@@ -126,6 +130,7 @@ public class AddLocationActivity extends Activity {
 		}
 	}
 
+	// onClick() method of 'find' button - searches GoogleMap fragment
 	public void go(View v) {
 		address = (EditText) findViewById(R.id.editText2);
 
@@ -207,31 +212,54 @@ public class AddLocationActivity extends Activity {
 			// get location name
 			String name = locationName.getText().toString();
 
+			String address = "No address found.";
+			
+			List<Address> myList;
+			Geocoder gc = new Geocoder(getBaseContext());
+			try {
+				myList = gc.getFromLocation(latitude, longitude, 1);
+				if(myList.size() > 0) {
+					Address temp = myList.get(0);
+					StringBuilder s = new StringBuilder();
+					int i = 0;
+					while(temp.getAddressLine(i) != null) {
+						s.append(temp.getAddressLine(i));
+						s.append("\n");
+						i++;
+					}
+					if(s.length() > 0)
+						address = s.toString();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			// check for duplicate location name
-//			if (db.locationExists(name)) {
-//				Toast.makeText(
-//						this,
-//						"A location with that name already exists! Please enter a new name.",
-//						Toast.LENGTH_LONG).show();
-//				return;
-//			}
+			if (db.locationExists(name)) {
+				Toast.makeText(
+						this,
+						"A location with that name already exists! Please enter a new name.",
+						Toast.LENGTH_LONG).show();
+				return;
+			}
 
 			// Debugging toast
 			Toast.makeText(
 					this,
 					"Added new location: " + name + " latitude = " + latitude
 							+ " longitude = " + longitude + " radius = "
-							+ radius, Toast.LENGTH_LONG).show();
+							+ radius + " Address: " + address, Toast.LENGTH_LONG).show();
 
 			Intent intentMessage = new Intent();
 
 			intentMessage.putExtra("NAME", name);
+			intentMessage.putExtra("ADDRESS", address);
 			intentMessage.putExtra("LONGITUDE", longitude);
 			intentMessage.putExtra("LATITUDE", latitude);
 			intentMessage.putExtra("RADIUS", radius);
-
+			
 			setResult(RESULT_OK, intentMessage);
-
+			Log.w("Warning", "AddLocationActivity -- after setResult");
 			finish();
 		}
 	}

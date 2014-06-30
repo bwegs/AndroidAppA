@@ -1,3 +1,12 @@
+/*
+ * Author - Ben Wegher
+ * Date   - 6/29/2014
+ * Class  - MainActivity.java
+ * Description - As the name suggests this is the 'Main'/Home activity.
+ * 				 Its primary function is to display the list of the user's
+ * 				 current alerts.
+ */
+
 package myApp.androidappa;
 
 import java.util.ArrayList;
