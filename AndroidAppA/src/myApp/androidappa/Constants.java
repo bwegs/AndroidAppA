@@ -7,7 +7,8 @@ public final class Constants {
 	public static final int UPDATE = 4;
 	
 	public static final int LOCATION = 5;
-	
+	public static final int LOCATION_PICKER_RESULT = 6;
+	public static final String LOCATION_PICKER_CALL = "LOCATION_CALL";
 
 	// Transition Constants
 	public static final int ENTER = 1;

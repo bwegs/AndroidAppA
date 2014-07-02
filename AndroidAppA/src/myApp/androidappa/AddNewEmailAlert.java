@@ -11,6 +11,7 @@ package myApp.androidappa;
 
 import myApp.database.DatabaseHandler;
 import myApp.list.AlertListItem;
+import myApp.location.EditLocationActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -40,7 +41,7 @@ public class AddNewEmailAlert extends Activity {
 		setContentView(R.layout.add_new_email_alert);
 		alertName = (EditText) findViewById(R.id.editText1);
 		emailAdd = (EditText) findViewById(R.id.editTextEmail);
-		location = (EditText) findViewById(R.id.editText3);
+		location = (EditText) findViewById(R.id.editTextLocation);
 		message = (EditText) findViewById(R.id.editText4);
 		enterRadio = (RadioButton) findViewById(R.id.radio0);
 		exitRadio = (RadioButton) findViewById(R.id.radio1);
@@ -222,7 +223,9 @@ public class AddNewEmailAlert extends Activity {
 
 	// onClick() for the 'Location' button
 	public void locationChooser(View v) {
-
+		Intent locationIntent = new Intent(this, EditLocationActivity.class);
+		locationIntent.putExtra("TYPE", Constants.LOCATION_PICKER_CALL);
+		startActivityForResult(locationIntent, Constants.LOCATION_PICKER_RESULT);
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -280,10 +283,15 @@ public class AddNewEmailAlert extends Activity {
 					}
 				}
 
-			} else {
-				// gracefully handle failure
-				Log.d(Constants.DEBUG_TAG, "Warning: activity result not ok");
+			} else if (requestCode == Constants.LOCATION_PICKER_RESULT) {
+				String name = data.getStringExtra("NAME");
+				EditText locationEntry = (EditText) findViewById(R.id.editTextLocation);
+				locationEntry.setText(name);
+				Log.d(Constants.DEBUG_TAG, "LOCATION_PICKER_RESULT received - location name = " + name);
 			}
+		} else {
+			// gracefully handle failure
+			Log.d(Constants.DEBUG_TAG, "Warning: activity result not ok");
 		}
 
 	}
