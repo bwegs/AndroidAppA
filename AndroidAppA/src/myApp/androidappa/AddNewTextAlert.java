@@ -242,6 +242,11 @@ public class AddNewTextAlert extends Activity {
 		startActivityForResult(contactPickerIntent,
 				Constants.CONTACT_PICKER_RESULT);
 	}
+	
+	// onClick() for the 'Location' button
+	public void locationChooser(View v) {
+		
+	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);

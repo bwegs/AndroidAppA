@@ -19,8 +19,8 @@
     <string name="name_hint">ex: Leaving Work</string>
     <string name="name_description">(Give this alert a meaningful name)</string>
     <string name="location_label">Location:</string>
-    <string name="location_hint">Use maps button</string>
-    <string name="maps_button_label">Maps</string>
+    <string name="location_hint">Enter location name here</string>
+    <string name="maps_button_label">Locations</string>
     <string name="contacts_button_description">Browse contacts</string>
     <string name="radio_enter_label">When I enter the location</string>
     <string name="radio_exit_label">When I exit the location</string>

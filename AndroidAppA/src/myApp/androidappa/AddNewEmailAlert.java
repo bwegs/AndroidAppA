@@ -56,18 +56,18 @@ public class AddNewEmailAlert extends Activity {
 			emailAdd.setText(received.getStringExtra("CONTACT"));
 
 			int locId = received.getIntExtra("LOCATION", 0);
-			if(db.locationExists(locId))
+			if (db.locationExists(locId))
 				location.setText(db.getLocation(locId).getName());
 			else
 				location.setText("Location not found");
-			
+
 			message.setText(received.getStringExtra("MESSAGE"));
 			if (received.getStringExtra("WHEN").equals("EXIT"))
 				exitRadio.setChecked(true);
 			else
 				enterRadio.setChecked(true);
 			createButton.setText("Update Alert");
-			
+
 			// don't let user modify the name
 			alertName.setEnabled(false);
 		}
@@ -140,13 +140,13 @@ public class AddNewEmailAlert extends Activity {
 				when = "EXIT";
 			else
 				when = "ENTER";
-			
+
 			int locId = -1;
-			if(db.locationExists(loc))
+			if (db.locationExists(loc))
 				locId = db.getLocation(loc).getLocationId();
-			
-			AlertListItem updateMe = new AlertListItem(name, email,
-					locId, text, when, Constants.EMAIL);
+
+			AlertListItem updateMe = new AlertListItem(name, email, locId,
+					text, when, Constants.EMAIL);
 
 			if (db.updateAlert(updateMe) == 1) {
 				Toast.makeText(getApplicationContext(),
@@ -173,13 +173,15 @@ public class AddNewEmailAlert extends Activity {
 		String loc = location.getText().toString();
 
 		// if a location by that name doesn't exist -- then return false
-		if(db.locationExists(loc) == false) {
-			Toast.makeText(AddNewEmailAlert.this, "Couldn't find a location by that name." +
-					" Make sure you've added it to your locations list first.",
+		if (db.locationExists(loc) == false) {
+			Toast.makeText(
+					AddNewEmailAlert.this,
+					"Couldn't find a location by that name."
+							+ " Make sure you've added it to your locations list first.",
 					Toast.LENGTH_LONG).show();
 			return false;
 		}
-		
+
 		// Validate input
 		if (checkEmpty(name)) { // Ensure name field is NOT empty
 			Toast.makeText(AddNewEmailAlert.this, "Give your alert a name!",
@@ -216,6 +218,11 @@ public class AddNewEmailAlert extends Activity {
 				Contacts.CONTENT_URI);
 		startActivityForResult(contactPickerIntent,
 				Constants.CONTACT_PICKER_RESULT);
+	}
+
+	// onClick() for the 'Location' button
+	public void locationChooser(View v) {
+
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
