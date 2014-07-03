@@ -2,19 +2,29 @@ package myApp.location;
 
 import java.util.ArrayList;
 
+import myApp.androidappa.AddNewEmailAlert;
+import myApp.androidappa.AddNewTextAlert;
 import myApp.androidappa.Constants;
+import myApp.androidappa.MainActivity;
 import myApp.androidappa.R;
 import myApp.database.DatabaseHandler;
 import myApp.geofence.GeofenceUtils;
+import myApp.list.AlertListItem;
 import myApp.list.LocationListAdapter;
 import myApp.list.LocationListItem;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class EditLocationActivity extends ListActivity {
 
@@ -37,13 +47,12 @@ public class EditLocationActivity extends ListActivity {
 		// load saved locations from local storage into locationListItems
 		locationListItems = db.getAllLocations();
 
-		if (locationListItems.size() == 0) {
-			Log.w("Warning", "locationListItems is empty");
-		} else
-			Log.w("Warning", "locationListItems is not empty");
 		// set the list adapter
 		mAdapter = new LocationListAdapter(this, locationListItems);
 		setListAdapter(mAdapter);
+
+		// register contextMenu
+		registerForContextMenu(getListView());
 
 		Intent mIntent = getIntent();
 		if (mIntent.getStringExtra("TYPE") != null) {
@@ -73,6 +82,57 @@ public class EditLocationActivity extends ListActivity {
 
 		db.close();
 
+	}
+
+	// Handles long click selection of list items
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+
+		switch (item.getItemId()) {
+		case R.id.delete:
+			LocationListItem deleteMe = (LocationListItem) mAdapter
+					.getItem((int) info.id);
+
+			// ********** TODO Confirmation or Undo feature
+			// REMOVE GEOFENCES FIRST & UPDATE AFFECTED ALERTS
+			db.deleteLocation(deleteMe); // remove location from database (don't
+											// have
+											// to do this)
+			mAdapter.delete(deleteMe); // remove from adapter
+
+			mAdapter.notifyDataSetChanged();
+
+			Toast.makeText(EditLocationActivity.this,
+					deleteMe.getName() + " was deleted.", Toast.LENGTH_LONG)
+					.show();
+			return true;
+		case R.id.edit:
+			// TODO - open appropriate activity and fill with data
+			LocationListItem editMe = (LocationListItem) mAdapter
+					.getItem((int) info.id);
+
+			Intent editIntent = new Intent(this, AddLocationActivity.class);
+
+			editIntent.putExtra("LOCATION_ID", editMe.getLocationId());
+			editIntent.putExtra("NAME", editMe.getName());
+			editIntent.putExtra("LATITUDE", editMe.getLatitude());
+			editIntent.putExtra("LONGITUDE", editMe.getLongitude());
+			editIntent.putExtra("RADIUS", editMe.getRadius());
+			editIntent.putExtra("ADDRESS", editMe.getAddress());
+
+			startActivityForResult(editIntent, Constants.UPDATE);
+
+		default:
+			return super.onContextItemSelected(item);
+		}
+	}
+
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.context_menu, menu);
 	}
 
 	// onClick() for Add New Location button
@@ -105,11 +165,11 @@ public class EditLocationActivity extends ListActivity {
 				mAdapter.add(addMe); // add the location to the list adapter
 				mAdapter.notifyDataSetChanged(); // notify the list adapter
 				Log.w("Warning", "EditLocation - onActivityResult ran");
-			} // else if(requestCode == Constants.UPDATE) {
-			// // restart activity so the updated alert appears
-			// finish();
-			// startActivity(getIntent());
-			// }
+			} else if (requestCode == Constants.UPDATE) {
+				// restart activity so the updated alert appears
+				finish();
+				startActivity(getIntent());
+			}
 
 			// result was not OK
 		} else {
