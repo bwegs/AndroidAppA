@@ -2,14 +2,10 @@ package myApp.location;
 
 import java.util.ArrayList;
 
-import myApp.androidappa.AddNewEmailAlert;
-import myApp.androidappa.AddNewTextAlert;
 import myApp.androidappa.Constants;
-import myApp.androidappa.MainActivity;
 import myApp.androidappa.R;
 import myApp.database.DatabaseHandler;
 import myApp.geofence.GeofenceUtils;
-import myApp.list.AlertListItem;
 import myApp.list.LocationListAdapter;
 import myApp.list.LocationListItem;
 import android.app.ListActivity;

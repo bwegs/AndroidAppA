@@ -24,8 +24,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:maxEms="6"
-            android:minEms="6"
+            android:maxEms="7"
+            android:minEms="7"
             android:text="Example Location"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -36,8 +36,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:maxEms="6"
-            android:minEms="6"
+            android:maxEms="7"
+            android:minEms="7"
             android:text="Radius"
             android:textSize="12sp" />
 
