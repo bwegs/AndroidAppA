@@ -93,8 +93,7 @@ public class EditLocationActivity extends ListActivity {
 			// ********** TODO Confirmation or Undo feature
 			// REMOVE GEOFENCES FIRST & UPDATE AFFECTED ALERTS
 			db.deleteLocation(deleteMe); // remove location from database (don't
-											// have
-											// to do this)
+										 // have to do this)
 			mAdapter.delete(deleteMe); // remove from adapter
 
 			mAdapter.notifyDataSetChanged();

@@ -120,22 +120,15 @@ public class AddLocationActivity extends Activity {
 				
 				// update globals
 				latitude = received.getDoubleExtra("LATITUDE", latitude);
-				longitude = received.getDoubleExtra("LONGITUDE",
-						longitude);
+				longitude = received.getDoubleExtra("LONGITUDE", longitude);
 				radius = received.getFloatExtra("RADIUS", radius);
 				address = received.getStringExtra("ADDRESS");
 				locationId = received.getIntExtra("LOCATION_ID", -1);
-
 				
-				// set marker and circle
+				// center map on location to be edited
 				googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
 						new LatLng(latitude, longitude), 14));
 
-				// update globals
-//				latitude = editLat;
-//				longitude = editLong;
-//				radius = editRadius;
-				
 				// add a circle around received location
 				circle = googleMap.addCircle(new CircleOptions()
 						.center(new LatLng(latitude, longitude))
