@@ -23,7 +23,7 @@ import android.util.Log;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// Database Version
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 5;
 
 	// Database name
 	private static final String DATABASE_NAME = "alertsManager.db";
@@ -42,6 +42,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String KEY_MESSAGE = "message";
 	private static final String KEY_TRIGGER = "trigger";
 	private static final String KEY_TYPE = "type";
+	private static final String KEY_ACTIVE = "active";
 
 	// locations table columns names
 	private static final String KEY_LAT = "latitude";
@@ -57,13 +58,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			+ KEY_NAME + " TEXT PRIMARY KEY," + KEY_CONTACT + " TEXT,"
 			+ KEY_LOCATION_ID + " INTEGER," + KEY_MESSAGE
 			+ " TEXT," + KEY_TRIGGER + " TEXT," + KEY_TYPE + " INTEGER,"
+			+ KEY_ACTIVE + " INTEGER,"
 			+ " FOREIGN KEY(" + KEY_LOCATION_ID + ") REFERENCES " + TABLE_LOCATIONS
 			+ "(" + KEY_LOCATION_ID + "))";
 
 	// Create 'locations' table string
 	private static final String CREATE_LOCATIONS_TABLE = "CREATE TABLE "
 			+ TABLE_LOCATIONS + "(" + KEY_LOCATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-			+ KEY_NAME + " TEXT," + KEY_LAT + " REAL," + KEY_LONG + " REAL,"
+			+ KEY_NAME + " TEXT UNIQUE," + KEY_LAT + " REAL," + KEY_LONG + " REAL,"
 			+ KEY_RAD + " REAL," + KEY_ADDRESS + " TEXT" + ")";
 
 	public DatabaseHandler(Context context) {
@@ -109,6 +111,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_MESSAGE, alert.getMessage()); // Message to be sent
 		values.put(KEY_TRIGGER, alert.getWhen()); // 'ENTER' or 'EXIT'
 		values.put(KEY_TYPE, alert.getIcon()); // R.id of corresponding icon
+		values.put(KEY_ACTIVE, alert.getActive()); // is alert active or not
 
 		// Inserting Row
 		db.insert(TABLE_ALERTS, null, values);
@@ -123,7 +126,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		Cursor cursor = db.query(TABLE_ALERTS, new String[] { KEY_NAME,
 				KEY_CONTACT, KEY_LOCATION_ID, KEY_MESSAGE, KEY_TRIGGER,
-				KEY_TYPE }, KEY_NAME + "=?", new String[] { name }, null, null,
+				KEY_TYPE, KEY_ACTIVE }, KEY_NAME + "=?", new String[] { name }, null, null,
 				null, null);
 		if (cursor != null)
 			cursor.moveToFirst();
@@ -132,6 +135,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				cursor.getString(1), Integer.parseInt(cursor.getString(2)),
 				cursor.getString(3), cursor.getString(4),
 				Integer.parseInt(cursor.getString(5)));
+		int active = Integer.parseInt(cursor.getString(6));
+		if(active == 1)
+			alert.setActive(true);
+		
 		// return alert
 		return alert;
 	}
@@ -157,6 +164,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				alert.setMessage(cursor.getString(3));
 				alert.setWhen(cursor.getString(4));
 				alert.setIcon(Integer.parseInt(cursor.getString(5)));
+				int active = Integer.parseInt(cursor.getString(6));
+				if(active == 1)
+					alert.setActive(true);
 				// Adding alert to list
 				alertList.add(alert);
 			} while (cursor.moveToNext());
@@ -179,6 +189,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(KEY_MESSAGE, alert.getMessage());
 		values.put(KEY_TRIGGER, alert.getWhen());
 		values.put(KEY_TYPE, alert.getIcon());
+		values.put(KEY_ACTIVE, alert.getActive());
 
 		// updating row
 		return db.update(TABLE_ALERTS, values, KEY_NAME + " = ?",
